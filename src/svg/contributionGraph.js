@@ -1,9 +1,13 @@
 // ── 2D Contribution Graph — Modern Card ─────────────────────────────────────
-export const generateContributionGraph = (grid, theme, totalContributions = 0) => {
-  const SQ = 11;   // square size
-  const GAP = 3;    // gap between squares
+export const generateContributionGraph = (
+  grid,
+  theme,
+  totalContributions = 0
+) => {
+  const SQ = 11; // square size
+  const GAP = 3; // gap between squares
   const STEP = SQ + GAP;
-  const PAD = 16;
+  const PAD = 24;
   const HEADER = 56;
 
   const bg = theme.background;
@@ -14,16 +18,16 @@ export const generateContributionGraph = (grid, theme, totalContributions = 0) =
   const ico = theme.iconColor || theme.accentColor;
 
   const weeks = grid.length;
-  const W = PAD * 2 + weeks * STEP - GAP;
+  const W = PAD * 2 + weeks * STEP - GAP + 16; // +16 for extra right padding
   const H = HEADER + 7 * STEP - GAP + PAD + 18; // +18 for legend
 
   // Theme-aware contribution colours — green scale tinted towards accentColor
   const LEVELS = [
-    `${bg}`,          // 0 — empty
-    `${acc}33`,       // 1 — very light
-    `${acc}66`,       // 2 — light
-    `${acc}aa`,       // 3 — medium
-    `${acc}`,         // 4 — full
+    `${bg}`, // 0 — empty
+    `${acc}33`, // 1 — very light
+    `${acc}66`, // 2 — light
+    `${acc}aa`, // 3 — medium
+    `${acc}`, // 4 — full
   ];
 
   // Day-of-week labels (Mon, Wed, Fri)
@@ -31,14 +35,18 @@ export const generateContributionGraph = (grid, theme, totalContributions = 0) =
 
   // Month label positions (omitted - using grid intensity only)
 
-  const squares = grid.map((week, wi) => {
-    return week.map((intensity, di) => {
-      const x = PAD + wi * STEP;
-      const y = HEADER + di * STEP;
-      return `<rect x="${x}" y="${y}" width="${SQ}" height="${SQ}" rx="2"
+  const squares = grid
+    .map((week, wi) => {
+      return week
+        .map((intensity, di) => {
+          const x = PAD + wi * STEP;
+          const y = HEADER + di * STEP;
+          return `<rect x="${x}" y="${y}" width="${SQ}" height="${SQ}" rx="2"
         fill="${LEVELS[intensity]}" stroke="${bdr}" stroke-width="0.5" opacity="${intensity === 0 ? 0.5 : 1}"/>`;
-    }).join('');
-  }).join('');
+        })
+        .join('');
+    })
+    .join('');
 
   // Day labels on the left
   const dayLabelsSVG = DAY_LABELS.map((label, i) => {
@@ -50,15 +58,18 @@ export const generateContributionGraph = (grid, theme, totalContributions = 0) =
   // Legend at the bottom
   const legendY = HEADER + 7 * STEP + 8;
   const legX = W - PAD - 5 * (SQ + 4);
-  const legend = LEVELS.map((c, i) => `
+  const legend = LEVELS.map(
+    (c, i) => `
     <rect x="${legX + i * (SQ + 4)}" y="${legendY}" width="${SQ}" height="${SQ}" rx="2"
       fill="${c}" stroke="${bdr}" stroke-width="0.5" opacity="${i === 0 ? 0.5 : 1}"/>
-  `).join('');
+  `
+  ).join('');
 
   // fmt total
-  const fmtTotal = totalContributions >= 1000
-    ? (totalContributions / 1000).toFixed(1) + 'K'
-    : String(totalContributions);
+  const fmtTotal =
+    totalContributions >= 1000
+      ? (totalContributions / 1000).toFixed(1) + 'K'
+      : String(totalContributions);
 
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
   <defs>

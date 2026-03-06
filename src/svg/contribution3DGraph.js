@@ -1,5 +1,9 @@
 // ── 3D Contribution Graph — Isometric Bar Chart ──────────────────────────────
-export const generateContribution3DGraph = (grid, theme, totalContributions = 0) => {
+export const generateContribution3DGraph = (
+  grid,
+  theme,
+  totalContributions = 0
+) => {
   const bg = theme.background;
   const bdr = theme.borderColor;
   const txt = theme.textColor;
@@ -8,24 +12,29 @@ export const generateContribution3DGraph = (grid, theme, totalContributions = 0)
   const ico = theme.iconColor || theme.accentColor;
 
   // Isometric projection constants
-  const BAR_W = 9;
-  const BAR_D = 4;     // depth of top face
-  const GAP_W = 3;     // gap between bars in a week
-  const GAP_WK = 6;     // gap between weeks
-  const STEP_W = BAR_W + GAP_W;
-  const WEEK_W = BAR_W + GAP_WK;
-  const MAX_BAR = 60;    // max bar height in px
-  const BASE_Y = 30;    // baseline from bottom of drawing area
-  const PAD = 16;
+  const BAR_W = 7;
+  const BAR_D = 4; // depth of top/right faces
+  const GAP_W = 2; // gap between bars in same week
+  const GAP_WK = 4; // gap between weeks
+
+  const STEP_X = BAR_W + GAP_WK; // Horizontal step per week
+  const STEP_Y = (BAR_W + GAP_W) / 2; // Vertical/Depth step per day (isometric skew)
+
+  const MAX_BAR = 50; // max height of the front face
+  const BASE_Y = 40; // distance from bottom of rendering area to the lowest baseline
+  const PAD = 20;
   const HEADER = 56;
 
   const weeks = grid.length;
   const maxCount = Math.max(1, ...grid.flat());
 
-  const DRAWING_W = weeks * WEEK_W + 6 * STEP_W;
-  const DRAWING_H = MAX_BAR + BASE_Y + BAR_D;
-  const W = PAD * 2 + DRAWING_W;
-  const H = HEADER + DRAWING_H + PAD + 10;
+  // 3D Isometric layout requires a wider bounding box because each day shifts right and down down
+  // Calculate exact bounds
+  const DRAWING_W = weeks * STEP_X + 7 * STEP_X;
+  const DRAWING_H = MAX_BAR + BASE_Y + 7 * STEP_Y;
+
+  const W = Math.max(760, PAD * 2 + DRAWING_W); // Ensure it's wide enough for typical GitHub layout
+  const H = Math.max(195, HEADER + DRAWING_H + PAD);
 
   // colour scale — 5 levels, tinted from accent
   const barColor = (count) => {
@@ -38,25 +47,28 @@ export const generateContribution3DGraph = (grid, theme, totalContributions = 0)
 
   const bars = [];
 
+  // Render back-to-front (weeks left-to-right, days top-to-bottom)
   grid.forEach((week, wi) => {
     week.forEach((count, di) => {
       if (count === 0) return;
 
+      // Calculate isometric base coordinate (bx, by)
+      const bx = PAD + (wi * STEP_X) + (di * STEP_X * 0.5); // x shifts right per week, and slightly right per day
+      const by = HEADER + DRAWING_H - BASE_Y + (di * STEP_Y) - (wi * STEP_Y * 0.2); // y shifts down per day
+
       const bh = Math.max(3, Math.round((count / maxCount) * MAX_BAR));
       const color = barColor(count);
-      const bx = PAD + wi * WEEK_W + di * STEP_W;
-      const by = HEADER + DRAWING_H - BASE_Y - bh;
 
       // Front face
-      bars.push(`<rect x="${bx}" y="${by}" width="${BAR_W}" height="${bh}"
+      bars.push(`<rect x="${bx}" y="${by - bh}" width="${BAR_W}" height="${bh}"
         fill="${color}" opacity="0.9"/>`);
 
-      // Top face (lighter)
-      bars.push(`<polygon points="${bx},${by} ${bx + BAR_W},${by} ${bx + BAR_W + BAR_D},${by - BAR_D} ${bx + BAR_D},${by - BAR_D}"
+      // Top face
+      bars.push(`<polygon points="${bx},${by - bh} ${bx + BAR_W},${by - bh} ${bx + BAR_W + BAR_D},${by - bh - BAR_D} ${bx + BAR_D},${by - bh - BAR_D}"
         fill="${color}" opacity="1"/>`);
 
-      // Right face (darker)
-      bars.push(`<polygon points="${bx + BAR_W},${by} ${bx + BAR_W},${by + bh} ${bx + BAR_W + BAR_D},${by + bh - BAR_D} ${bx + BAR_W + BAR_D},${by - BAR_D}"
+      // Right face
+      bars.push(`<polygon points="${bx + BAR_W},${by - bh} ${bx + BAR_W},${by} ${bx + BAR_W + BAR_D},${by - BAR_D} ${bx + BAR_W + BAR_D},${by - bh - BAR_D}"
         fill="${color}" opacity="0.5"/>`);
     });
   });
@@ -65,9 +77,10 @@ export const generateContribution3DGraph = (grid, theme, totalContributions = 0)
   const baseY = HEADER + DRAWING_H - BASE_Y + 1;
 
   // fmt total
-  const fmtTotal = totalContributions >= 1000
-    ? (totalContributions / 1000).toFixed(1) + 'K'
-    : String(totalContributions);
+  const fmtTotal =
+    totalContributions >= 1000
+      ? (totalContributions / 1000).toFixed(1) + 'K'
+      : String(totalContributions);
 
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
   <defs>
