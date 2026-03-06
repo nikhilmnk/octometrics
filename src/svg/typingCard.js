@@ -5,12 +5,10 @@ export const generateTypingCard = ({
   font = "Fira Code",
   size = 28,
   width = 700,
-  color = "00F7FF",
-  center = true,
-  vCenter = true
+  color = "00F7FF"
 }) => {
 
-  const { lines, typeTime, eraseTime, pause = 1000, totalLineTime } = typingData;
+  const { lines, typeTime, pause = 1000, totalLineTime } = typingData;
 
   const svgHeight = 90;
   const totalMs = lines.length * totalLineTime;

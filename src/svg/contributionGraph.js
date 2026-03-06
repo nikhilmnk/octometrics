@@ -29,13 +29,7 @@ export const generateContributionGraph = (grid, theme, totalContributions = 0) =
   // Day-of-week labels (Mon, Wed, Fri)
   const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 
-  // Month label positions
-  const monthLabels = [];
-  let lastMonth = -1;
-  grid.forEach((week, wi) => {
-    const firstDay = week[0]; // we don't have date objects here, skip month labels
-    // We'll just skip month labels since engine only gives intensity grid
-  });
+  // Month label positions (omitted - using grid intensity only)
 
   const squares = grid.map((week, wi) => {
     return week.map((intensity, di) => {

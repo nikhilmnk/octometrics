@@ -34,7 +34,8 @@ class CacheManager {
   /**
    * Calculate size of cached value in bytes
    */
-  calculateSize(value, key) {
+  // eslint-disable-next-line no-unused-vars
+  calculateSize(value, _key) {
     if (typeof value === 'string') {
       return Buffer.byteLength(value, 'utf8');
     }

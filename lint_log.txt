@@ -1,0 +1,15 @@
+
+C:\Users\User\Desktop\New folder\all-in-one-github-readme-stats\src\middleware\errorHandler.js
+  6:45  warning  '_next' is defined but never used  no-unused-vars
+
+C:\Users\User\Desktop\New folder\all-in-one-github-readme-stats\src\svg\languageCard.js
+  109:77  error  'sub' is not defined  no-undef
+
+C:\Users\User\Desktop\New folder\all-in-one-github-readme-stats\src\utils\cacheEnhanced.js
+  37:24  warning  '_key' is defined but never used  no-unused-vars
+
+C:\Users\User\Desktop\New folder\all-in-one-github-readme-stats\src\utils\errorHandler.js
+  1:45  warning  'next' is defined but never used  no-unused-vars
+
+✖ 4 problems (1 error, 3 warnings)
+

@@ -41,8 +41,7 @@ export function svgText({
   fill = '#333',
   fontWeight = '400',
   textAnchor = 'start',
-  className = 'svg-text',
-  fontSize: size
+  className = 'svg-text'
 } = {}) {
   return `<text x="${x}" y="${y}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fill}" text-anchor="${textAnchor}" class="${className}">${text}</text>`;
 }
@@ -206,7 +205,6 @@ export function svgInfoBox({
 export function buildGrid({
   cols = 3,
   width = 900,
-  height = 300,
   gap = 20,
   padding = 20
 } = {}) {

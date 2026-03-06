@@ -1,4 +1,4 @@
-import { config, getFeatureConfig } from '../config/config.js';
+import { getFeatureConfig } from '../config/config.js';
 
 const headers = {
   "User-Agent": "octometrics"

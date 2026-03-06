@@ -100,7 +100,7 @@ const layoutDefault = (data, theme) => {
   const H = PAD + 50 + PAD + 110 + PAD + Math.max(langH, repoH) + PAD + 20;
 
   const bg = theme.background, bdr = theme.borderColor, txt = theme.textColor;
-  const sub = theme.subtextColor || '#8b949e', acc = theme.accentColor;
+  const sub = theme.subtextColor || '#8b949e';
   const ico = theme.iconColor || theme.accentColor;
 
   const LEFT = PAD;

@@ -51,7 +51,7 @@ export function createController({
       }
 
       // Load theme
-      const loadedTheme = themeLoader.getTheme(theme);
+      let loadedTheme = themeLoader.getTheme(theme);
       if (!loadedTheme) {
         logger.warn({ theme }, 'Unknown theme, falling back to dark');
         loadedTheme = themeLoader.getTheme('dark');

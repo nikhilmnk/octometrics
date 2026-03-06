@@ -4,8 +4,7 @@ import { loadTheme } from "../utils/themeLoader.js";
 
 export const typingController = async (req, res) => {
   try {
-    let {
-      lines,
+    const {
       font = "Fira Code",
       size = "24",
       duration = "3000",
@@ -16,6 +15,8 @@ export const typingController = async (req, res) => {
       vCenter = "false",
       theme = "dark"
     } = req.query;
+
+    let { lines } = req.query;
 
     if (!lines) {
       const errorSvg = `
@@ -66,7 +67,7 @@ export const typingController = async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.send(svg);
   } catch (error) {
-    console.log('error',error)
+    console.log('error', error)
     const errorSvg = `
     <svg width="500" height="200" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="#ffcccc"/>

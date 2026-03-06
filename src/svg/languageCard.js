@@ -75,7 +75,6 @@ export const generateLanguageCard = (languages, theme, layout = 'bar', view = 't
   const bdr = theme.borderColor;
   const txt = theme.textColor;
   const sub = theme.subtextColor || '#8b949e';
-  const acc = theme.accentColor;
   const ico = theme.iconColor || theme.accentColor;
 
   const langs = Object.entries(languages).sort((a, b) => b[1] - a[1]);
