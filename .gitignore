@@ -1,0 +1,21 @@
+node_modules
+.env
+# Test and coverage
+coverage
+*.lcov
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist
+build
+
+*.md
