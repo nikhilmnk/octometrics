@@ -1,19 +1,19 @@
 import { getFeatureConfig } from '../config/config.js';
 
 const headers = {
-  "User-Agent": "octometrics"
+  'User-Agent': 'octometrics',
 };
 
 const githubConfig = getFeatureConfig('github');
 // Only attach token if it looks like a real GitHub token (not a placeholder)
-const isRealToken = (t) => t && (
-  t.startsWith('ghp_') ||
-  t.startsWith('gho_') ||
-  t.startsWith('github_pat_') ||
-  (t.length >= 40 && !t.includes(' ') && t !== 'your_github_token_here')
-);
+const isRealToken = (t) =>
+  t &&
+  (t.startsWith('ghp_') ||
+    t.startsWith('gho_') ||
+    t.startsWith('github_pat_') ||
+    (t.length >= 40 && !t.includes(' ') && t !== 'your_github_token_here'));
 if (isRealToken(githubConfig?.token)) {
-  headers["Authorization"] = `Bearer ${githubConfig.token}`;
+  headers['Authorization'] = `Bearer ${githubConfig.token}`;
 }
 
 // Fetch user profile data
@@ -47,15 +47,21 @@ export const fetchRepositoryInfo = async (repo) => {
 };
 
 // Fetch contribution graph data via GraphQL (requires GITHUB_TOKEN)
-export const fetchContributionGraph = async (username) => {
+export const fetchContributionGraph = async (
+  username,
+  from = null,
+  to = null
+) => {
   if (!headers['Authorization']) {
-    throw new Error('GITHUB_TOKEN is not set. Add it to your .env file. GitHub GraphQL API requires authentication. See: https://github.com/settings/tokens');
+    throw new Error(
+      'GITHUB_TOKEN is not set. Add it to your .env file. GitHub GraphQL API requires authentication. See: https://github.com/settings/tokens'
+    );
   }
 
   const query = `
-    query($username: String!) {
+    query($username: String!, $from: DateTime, $to: DateTime) {
       user(login: $username) {
-        contributionsCollection {
+        contributionsCollection(from: $from, to: $to) {
           contributionCalendar {
             totalContributions
             weeks {
@@ -78,9 +84,10 @@ export const fetchContributionGraph = async (username) => {
     },
     body: JSON.stringify({
       query,
-      variables: { username },
+      variables: { username, from, to },
     }),
   });
+  console.log('Sending to GitHub:', { username, from, to });
 
   if (!response.ok) {
     throw new Error(`GitHub GraphQL API error: ${response.status}`);
@@ -88,7 +95,9 @@ export const fetchContributionGraph = async (username) => {
 
   const data = await response.json();
   if (data.errors) {
-    throw new Error(`GraphQL errors: ${data.errors.map(e => e.message).join(', ')}`);
+    throw new Error(
+      `GraphQL errors: ${data.errors.map((e) => e.message).join(', ')}`
+    );
   }
 
   return data.data.user.contributionsCollection.contributionCalendar;

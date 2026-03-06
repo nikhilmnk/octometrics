@@ -1,7 +1,7 @@
 /**
  * Example integration test for API routes
  * Tests API endpoints using supertest pattern
- * 
+ *
  * Note: Requires the Express app to be exported from src/server.js
  * or created as a separate factory function for testing
  */

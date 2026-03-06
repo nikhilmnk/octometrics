@@ -2,12 +2,13 @@
 export const generateContributionGraph = (
   grid,
   theme,
-  totalContributions = 0
+  totalContributions = 0,
+  year = null
 ) => {
   const SQ = 11; // square size
   const GAP = 3; // gap between squares
   const STEP = SQ + GAP;
-  const PAD = 24;
+  const PAD = 36;
   const HEADER = 56;
 
   const bg = theme.background;
@@ -18,7 +19,7 @@ export const generateContributionGraph = (
   const ico = theme.iconColor || theme.accentColor;
 
   const weeks = grid.length;
-  const W = PAD * 2 + weeks * STEP - GAP + 16; // +16 for extra right padding
+  const W = PAD * 2 + weeks * STEP - GAP + 30; // +30 for extra right padding
   const H = HEADER + 7 * STEP - GAP + PAD + 18; // +18 for legend
 
   // Theme-aware contribution colours — green scale tinted towards accentColor
@@ -57,7 +58,7 @@ export const generateContributionGraph = (
 
   // Legend at the bottom
   const legendY = HEADER + 7 * STEP + 8;
-  const legX = W - PAD - 5 * (SQ + 4);
+  const legX = W - PAD - 5 * (SQ + 4) - 20;
   const legend = LEVELS.map(
     (c, i) => `
     <rect x="${legX + i * (SQ + 4)}" y="${legendY}" width="${SQ}" height="${SQ}" rx="2"
@@ -95,7 +96,7 @@ export const generateContributionGraph = (
 
   <!-- Header -->
   <text x="${PAD + 22}" y="26" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="${txt}">Contribution Graph</text>
-  <text x="${PAD + 22}" y="41" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${fmtTotal} contributions • past year</text>
+  <text x="${PAD + 22}" y="41" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${fmtTotal} contributions • ${year || 'past year'}</text>
 
   <!-- Divider -->
   <line x1="${PAD}" y1="52" x2="${W - PAD}" y2="52" stroke="${bdr}" stroke-width="1" opacity="0.6"/>

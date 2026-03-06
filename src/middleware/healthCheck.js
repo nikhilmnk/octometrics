@@ -15,7 +15,7 @@ export function healthCheck(req, res) {
     status: 'ok',
     uptime: Math.floor(uptime / 1000), // seconds
     timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0'
+    version: process.env.npm_package_version || '1.0.0',
   };
 
   logger.debug(health, 'Health check');
@@ -43,22 +43,25 @@ export function readinessCheck(req, res) {
       ready,
       checks: {
         cache: cacheHealthy,
-        memory: memoryHealthy
+        memory: memoryHealthy,
       },
       memory: {
         heapUsedMB: Math.round(memUsage.heapUsed / 1024 / 1024),
         heapTotalMB: Math.round(memUsage.heapTotal / 1024 / 1024),
         externalMB: Math.round(memUsage.external / 1024 / 1024),
-        percentUsed: heapUsedPercent.toFixed(1)
+        percentUsed: heapUsedPercent.toFixed(1),
       },
-      cache: cacheStats
+      cache: cacheStats,
     };
 
     logger.debug(status, 'Readiness check');
 
     if (!ready) {
       logger.warn(status, 'Service not ready');
-      return res.status(503).set('Content-Type', 'application/json').json(status);
+      return res
+        .status(503)
+        .set('Content-Type', 'application/json')
+        .json(status);
     }
 
     res.set('Content-Type', 'application/json').json(status);
@@ -66,7 +69,7 @@ export function readinessCheck(req, res) {
     logger.error({ error: error.message }, 'Readiness check failed');
     res.status(503).json({
       ready: false,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -86,7 +89,7 @@ export function metricsCheck(req, res) {
         heapUsedMB: Math.round(memUsage.heapUsed / 1024 / 1024),
         heapTotalMB: Math.round(memUsage.heapTotal / 1024 / 1024),
         externalMB: Math.round(memUsage.external / 1024 / 1024),
-        rssMB: Math.round(memUsage.rss / 1024 / 1024)
+        rssMB: Math.round(memUsage.rss / 1024 / 1024),
       },
       cache: cacheStats,
       process: {
@@ -94,8 +97,8 @@ export function metricsCheck(req, res) {
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
-        env: config.NODE_ENV
-      }
+        env: config.NODE_ENV,
+      },
     };
 
     logger.debug(metrics, 'Metrics check');
@@ -103,7 +106,7 @@ export function metricsCheck(req, res) {
   } catch (error) {
     logger.error({ error: error.message }, 'Metrics check failed');
     res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 }

@@ -12,7 +12,7 @@ export function svgContainer({
   borderColor = '#ddd',
   borderWidth = 1,
   borderRadius = 12,
-  children = ''
+  children = '',
 } = {}) {
   return `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -41,7 +41,7 @@ export function svgText({
   fill = '#333',
   fontWeight = '400',
   textAnchor = 'start',
-  className = 'svg-text'
+  className = 'svg-text',
 } = {}) {
   return `<text x="${x}" y="${y}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fill}" text-anchor="${textAnchor}" class="${className}">${text}</text>`;
 }
@@ -58,7 +58,7 @@ export function svgBar({
   label = '',
   value = '',
   labelFill = '#666',
-  valueFill = '#333'
+  valueFill = '#333',
 } = {}) {
   return `
     <g>
@@ -72,13 +72,7 @@ export function svgBar({
 /**
  * Legend item
  */
-export function svgLegendItem({
-  x,
-  y,
-  color,
-  label,
-  size = 12
-} = {}) {
+export function svgLegendItem({ x, y, color, label, size = 12 } = {}) {
   return `
     <g>
       <rect x="${x}" y="${y - size / 2}" width="${size}" height="${size}" fill="${color}" rx="2" />
@@ -99,7 +93,7 @@ export function svgStatCard({
   icon = '',
   bgColor = '#f6f8fa',
   labelFill = '#666',
-  valueFill = '#333'
+  valueFill = '#333',
 } = {}) {
   return `
     <g>
@@ -123,7 +117,7 @@ export function svgProgressBar({
   fillColor = '#0366d6',
   bgColor = '#e1e4e8',
   label = '',
-  value = ''
+  value = '',
 } = {}) {
   const fillWidth = (width * percentage) / 100;
 
@@ -146,7 +140,7 @@ export function svgDivider({
   x2,
   y2,
   stroke = '#e1e4e8',
-  strokeWidth = 1
+  strokeWidth = 1,
 } = {}) {
   return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
 }
@@ -160,12 +154,12 @@ export function svgBadge({
   text,
   bgColor = '#f1f8e9',
   textColor = '#33691e',
-  size = 'sm'
+  size = 'sm',
 } = {}) {
   const sizes = {
     sm: { width: 60, height: 20, fontSize: 11, padding: 4 },
     md: { width: 80, height: 24, fontSize: 12, padding: 6 },
-    lg: { width: 100, height: 28, fontSize: 13, padding: 8 }
+    lg: { width: 100, height: 28, fontSize: 13, padding: 8 },
   };
 
   const s = sizes[size] || sizes.sm;
@@ -188,7 +182,7 @@ export function svgInfoBox({
   title,
   content,
   bgColor = '#f6f8fa',
-  borderColor = '#e1e4e8'
+  borderColor = '#e1e4e8',
 } = {}) {
   return `
     <g>
@@ -206,7 +200,7 @@ export function buildGrid({
   cols = 3,
   width = 900,
   gap = 20,
-  padding = 20
+  padding = 20,
 } = {}) {
   const contentWidth = width - padding * 2;
   const itemWidth = (contentWidth - gap * (cols - 1)) / cols;
@@ -232,7 +226,7 @@ export function buildHorizontalLayout({
   width = 900,
   height = 300,
   gap = 20,
-  padding = 20
+  padding = 20,
 } = {}) {
   const contentWidth = width - padding * 2;
   const itemWidth = (contentWidth - gap * (items - 1)) / items;
@@ -244,7 +238,7 @@ export function buildHorizontalLayout({
       x: padding + i * (itemWidth + gap),
       y: padding,
       width: itemWidth,
-      height: height - padding * 2
+      height: height - padding * 2,
     });
   }
 
@@ -259,7 +253,7 @@ export function buildVerticalLayout({
   width = 900,
   gap = 10,
   padding = 20,
-  itemHeight = 40
+  itemHeight = 40,
 } = {}) {
   const layout = [];
   for (let i = 0; i < items; i++) {
@@ -268,7 +262,7 @@ export function buildVerticalLayout({
       x: padding,
       y: padding + i * (itemHeight + gap),
       width: width - padding * 2,
-      height: itemHeight
+      height: itemHeight,
     });
   }
 

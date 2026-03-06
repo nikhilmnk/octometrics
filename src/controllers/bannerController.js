@@ -5,7 +5,8 @@ import { loadTheme } from '../utils/themeLoader.js';
 export const bannerController = async (req, res) => {
   try {
     const {
-      username, name,
+      username,
+      name,
       title,
       subtitle,
       tech,
@@ -29,7 +30,14 @@ export const bannerController = async (req, res) => {
     }
 
     const themeObj = loadTheme(theme);
-    const bannerData = generateBanner(displayName, title, tech, { subtitle, location, social, wave, pattern, align });
+    const bannerData = generateBanner(displayName, title, tech, {
+      subtitle,
+      location,
+      social,
+      wave,
+      pattern,
+      align,
+    });
     const svg = generateBannerCard(bannerData, themeObj);
 
     res.setHeader('Content-Type', 'image/svg+xml').send(svg);

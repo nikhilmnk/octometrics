@@ -2,12 +2,14 @@ import { escapeSVG } from '../utils/sanitize.js';
 
 // Format large numbers: 13647 → "13.6K", 500 → "500"
 const fmt = (n) => {
-  if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 1 : 2).replace(/\.?0+$/, '') + 'K';
+  if (n >= 1000)
+    return (n / 1000).toFixed(n >= 10000 ? 1 : 2).replace(/\.?0+$/, '') + 'K';
   return String(n);
 };
 
 // Truncate text to maxChars, appending ellipsis if needed
-const trunc = (str, max) => str.length > max ? str.slice(0, max - 1) + '…' : str;
+const trunc = (str, max) =>
+  str.length > max ? str.slice(0, max - 1) + '…' : str;
 
 // Split description into up to 2 lines of maxChars each
 const wrapDesc = (str, max) => {
@@ -23,25 +25,41 @@ const wrapDesc = (str, max) => {
 
 // Language colour dots (a small curated set matching GitHub's colours)
 const LANG_COLORS = {
-  JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5',
-  Ruby: '#701516', Java: '#b07219', Go: '#00ADD8',
-  Rust: '#dea584', C: '#555555', 'C++': '#f34b7d',
-  'C#': '#178600', PHP: '#4F5D95', Swift: '#F05138',
-  Kotlin: '#A97BFF', HTML: '#e34c26', CSS: '#563d7c',
-  Shell: '#89e051', Dart: '#00B4AB', Scala: '#c22d40',
-  R: '#198CE7', Vue: '#41b883', default: '#8b949e',
+  JavaScript: '#f1e05a',
+  TypeScript: '#3178c6',
+  Python: '#3572A5',
+  Ruby: '#701516',
+  Java: '#b07219',
+  Go: '#00ADD8',
+  Rust: '#dea584',
+  C: '#555555',
+  'C++': '#f34b7d',
+  'C#': '#178600',
+  PHP: '#4F5D95',
+  Swift: '#F05138',
+  Kotlin: '#A97BFF',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Shell: '#89e051',
+  Dart: '#00B4AB',
+  Scala: '#c22d40',
+  R: '#198CE7',
+  Vue: '#41b883',
+  default: '#8b949e',
 };
 const langColor = (l) => LANG_COLORS[l] || LANG_COLORS.default;
 
 // Compact star path (16×16 heroicon / octicon style)
-const STAR_PATH = 'M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z';
-const FORK_PATH = 'M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z';
+const STAR_PATH =
+  'M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z';
+const FORK_PATH =
+  'M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z';
 
 // ── CARD ──────────────────────────────────────────────────────────────────────
 export const generateRepoCard = (repos, theme) => {
   const W = 495;
   const COLS = 2;
-  const CELL_W = (W - 48) / COLS;   // 2-column grid with gaps
+  const CELL_W = (W - 48) / COLS; // 2-column grid with gaps
   const CELL_H = 122;
   const GAP = 12;
   const PAD = 16;
@@ -58,27 +76,28 @@ export const generateRepoCard = (repos, theme) => {
   const svgH = HEADER + rows * (CELL_H + GAP) + PAD;
 
   // approx chars that fit per line at the given font-size inside CELL_W
-  const NAME_MAX = 22;   // 12px bold, after 24px icon offset
-  const DESC_MAX = 34;   // 10px, full cell width minus padding
+  const NAME_MAX = 22; // 12px bold, after 24px icon offset
+  const DESC_MAX = 34; // 10px, full cell width minus padding
 
-  const cards = repos.map((repo, i) => {
-    const col = i % COLS;
-    const row = Math.floor(i / COLS);
-    const x = PAD + col * (CELL_W + GAP);
-    const y = HEADER + row * (CELL_H + GAP);
-    const name = trunc(repo.name, NAME_MAX);
-    const [dl1, dl2] = wrapDesc(repo.description, DESC_MAX);
-    const lc = repo.language ? langColor(repo.language) : null;
+  const cards = repos
+    .map((repo, i) => {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const x = PAD + col * (CELL_W + GAP);
+      const y = HEADER + row * (CELL_H + GAP);
+      const name = trunc(repo.name, NAME_MAX);
+      const [dl1, dl2] = wrapDesc(repo.description, DESC_MAX);
+      const lc = repo.language ? langColor(repo.language) : null;
 
-    // rows inside card:
-    //  y+20  name
-    //  y+36  desc line 1
-    //  y+48  desc line 2 (if any)
-    //  y+70  language dot
-    //  y+88  ⭐ stars
-    //  y+104 🍴 forks
+      // rows inside card:
+      //  y+20  name
+      //  y+36  desc line 1
+      //  y+48  desc line 2 (if any)
+      //  y+70  language dot
+      //  y+88  ⭐ stars
+      //  y+104 🍴 forks
 
-    return `
+      return `
       <!-- Repo card bg -->
       <rect x="${x}" y="${y}" width="${CELL_W}" height="${CELL_H}" rx="8"
         fill="${bg}" stroke="${bdr}" stroke-width="1"/>
@@ -97,10 +116,14 @@ export const generateRepoCard = (repos, theme) => {
       ${dl2 ? `<text x="${x + 10}" y="${y + 48}" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${escapeSVG(dl2)}</text>` : ''}
 
       <!-- Language dot + name -->
-      ${lc ? `
+      ${
+        lc
+          ? `
         <circle cx="${x + 15}" cy="${y + 68}" r="5" fill="${lc}"/>
         <text x="${x + 25}" y="${y + 72}" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${escapeSVG(repo.language)}</text>
-      ` : ''}
+      `
+          : ''
+      }
 
       <!-- Stars (own row) -->
       <g transform="translate(${x + 10},${y + 82}) scale(0.75)">
@@ -120,7 +143,8 @@ export const generateRepoCard = (repos, theme) => {
       <line x1="${x}" y1="${y + CELL_H - 1}" x2="${x + CELL_W}" y2="${y + CELL_H - 1}"
         stroke="${acc}" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
     `;
-  }).join('');
+    })
+    .join('');
 
   return `<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg">
   <defs>

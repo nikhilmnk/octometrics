@@ -1,4 +1,7 @@
-import { fetchUserProfile, fetchRepositoryInfo } from '../services/githubService.js';
+import {
+  fetchUserProfile,
+  fetchRepositoryInfo,
+} from '../services/githubService.js';
 import { formatNumber } from '../utils/svgUtils.js';
 
 export const getBadgeData = async (type, param) => {
@@ -14,7 +17,10 @@ export const getBadgeData = async (type, param) => {
       case 'forks':
         return { label: 'Forks', value: formatNumber(data.forks_count) };
       case 'license':
-        return { label: 'License', value: data.license ? data.license.spdx_id : 'None' };
+        return {
+          label: 'License',
+          value: data.license ? data.license.spdx_id : 'None',
+        };
       case 'repo':
         return { label: 'Repo', value: data.name };
       default:

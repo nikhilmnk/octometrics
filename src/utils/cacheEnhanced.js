@@ -10,7 +10,7 @@ class CacheManager {
     const {
       max = config.CACHE_MAX_ITEMS,
       maxSize = config.CACHE_MAX_SIZE,
-      ttl = config.CACHE_TTL * 1000 // Convert to milliseconds
+      ttl = config.CACHE_TTL * 1000, // Convert to milliseconds
     } = options;
 
     this.cache = new LRU({
@@ -19,16 +19,13 @@ class CacheManager {
       ttl,
       sizeCalculation: this.calculateSize.bind(this),
       updateAgeOnGet: true,
-      updateAgeOnHas: false
+      updateAgeOnHas: false,
     });
 
     this.namespaces = new Map();
     this.versions = new Map();
 
-    logger.info(
-      { max, maxSize, ttl: config.CACHE_TTL },
-      'Cache initialized'
-    );
+    logger.info({ max, maxSize, ttl: config.CACHE_TTL }, 'Cache initialized');
   }
 
   /**
@@ -61,7 +58,10 @@ class CacheManager {
     const options = ttl ? { ttl: ttl * 1000 } : {};
 
     this.cache.set(fullKey, value, options);
-    logger.debug({ namespace, key, size: this.calculateSize(value) }, 'Cache set');
+    logger.debug(
+      { namespace, key, size: this.calculateSize(value) },
+      'Cache set'
+    );
   }
 
   /**
@@ -162,7 +162,10 @@ class CacheManager {
   invalidateNamespace(namespace) {
     const current = this.getVersion(namespace);
     this.setVersion(namespace, current + 1);
-    logger.info({ namespace, newVersion: current + 1 }, 'Namespace invalidated');
+    logger.info(
+      { namespace, newVersion: current + 1 },
+      'Namespace invalidated'
+    );
   }
 
   /**
@@ -173,7 +176,10 @@ class CacheManager {
       size: this.cache.size,
       maxSize: this.cache.maxSize,
       calculatedSize: this.cache.calculatedSize,
-      percentUsed: ((this.cache.calculatedSize / this.cache.maxSize) * 100).toFixed(2)
+      percentUsed: (
+        (this.cache.calculatedSize / this.cache.maxSize) *
+        100
+      ).toFixed(2),
     };
   }
 
@@ -229,5 +235,5 @@ export const cache = {
   clear: () => cacheManager.clear(),
   getStats: () => cacheManager.getStats(),
   keys: () => cacheManager.keys(),
-  entries: () => cacheManager.entries()
+  entries: () => cacheManager.entries(),
 };

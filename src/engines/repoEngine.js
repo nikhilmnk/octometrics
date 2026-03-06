@@ -10,7 +10,7 @@ export const getRepoStats = (repos, count = 6) => {
   return repos
     .sort((a, b) => b.stargazers_count - a.stargazers_count)
     .slice(0, count)
-    .map(repo => ({
+    .map((repo) => ({
       name: repo.name,
       description: repo.description || 'No description',
       stars: repo.stargazers_count,

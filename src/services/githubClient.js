@@ -6,13 +6,13 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
 
 const headers = {
-  "User-Agent": "octometrics",
-  "Accept": "application/vnd.github.v3+json"
+  'User-Agent': 'octometrics',
+  Accept: 'application/vnd.github.v3+json',
 };
 
 const githubConfig = getFeatureConfig('github');
 if (githubConfig && githubConfig.token) {
-  headers["Authorization"] = `Bearer ${githubConfig.token}`;
+  headers['Authorization'] = `Bearer ${githubConfig.token}`;
 }
 
 /**
@@ -22,7 +22,7 @@ async function fetchWithRetry(url, options = {}, retries = 0) {
   try {
     const response = await fetch(url, {
       ...options,
-      headers: { ...headers, ...options.headers }
+      headers: { ...headers, ...options.headers },
     });
 
     if (!response.ok) {
@@ -31,14 +31,21 @@ async function fetchWithRetry(url, options = {}, retries = 0) {
         logger.warn({ url, retryAfter }, 'GitHub API rate limited');
         throw new Error(`Rate limited. Retry after: ${retryAfter}`);
       }
-      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `GitHub API error: ${response.status} ${response.statusText}`
+      );
     }
 
     return response;
   } catch (error) {
     if (retries < MAX_RETRIES && !error.message.includes('Rate limited')) {
-      logger.debug({ url, retries }, `Retrying request (attempt ${retries + 1})`);
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retries + 1)));
+      logger.debug(
+        { url, retries },
+        `Retrying request (attempt ${retries + 1})`
+      );
+      await new Promise((resolve) =>
+        setTimeout(resolve, RETRY_DELAY * (retries + 1))
+      );
       return fetchWithRetry(url, options, retries + 1);
     }
     throw error;
@@ -55,7 +62,10 @@ export const fetchUserProfile = async (username) => {
     logger.debug({ username }, 'Fetched user profile');
     return response.json();
   } catch (error) {
-    logger.error({ username, error: error.message }, 'Failed to fetch user profile');
+    logger.error(
+      { username, error: error.message },
+      'Failed to fetch user profile'
+    );
     throw error;
   }
 };
@@ -70,7 +80,10 @@ export const fetchUserRepositories = async (username) => {
     logger.debug({ username }, 'Fetched user repositories');
     return response.json();
   } catch (error) {
-    logger.error({ username, error: error.message }, 'Failed to fetch repositories');
+    logger.error(
+      { username, error: error.message },
+      'Failed to fetch repositories'
+    );
     throw error;
   }
 };
@@ -85,7 +98,10 @@ export const fetchRepositoryInfo = async (repo) => {
     logger.debug({ repo }, 'Fetched repository info');
     return response.json();
   } catch (error) {
-    logger.error({ repo, error: error.message }, 'Failed to fetch repository info');
+    logger.error(
+      { repo, error: error.message },
+      'Failed to fetch repository info'
+    );
     throw error;
   }
 };
@@ -115,20 +131,25 @@ export const fetchContributionGraph = async (username) => {
     const response = await fetchWithRetry(`${GITHUB_API_BASE}/graphql`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query, variables: { username } })
+      body: JSON.stringify({ query, variables: { username } }),
     });
 
     const data = await response.json();
     if (data.errors) {
-      throw new Error(`GraphQL errors: ${data.errors.map(e => e.message).join(', ')}`);
+      throw new Error(
+        `GraphQL errors: ${data.errors.map((e) => e.message).join(', ')}`
+      );
     }
 
     logger.debug({ username }, 'Fetched contribution graph');
     return data.data.user.contributionsCollection.contributionCalendar;
   } catch (error) {
-    logger.error({ username, error: error.message }, 'Failed to fetch contribution graph');
+    logger.error(
+      { username, error: error.message },
+      'Failed to fetch contribution graph'
+    );
     throw error;
   }
 };

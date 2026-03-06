@@ -2,9 +2,21 @@ import { escapeSVG } from '../utils/sanitize.js';
 
 // Distinct palette for language colours (cycles if more langs than colours)
 const LANG_COLORS = [
-  '#58a6ff', '#ff7b72', '#d2a8ff', '#ffa657', '#7ee787',
-  '#f778ba', '#79c0ff', '#e3b341', '#56d364', '#db6d28',
-  '#a5d6ff', '#ffdcd7', '#ddf4ff', '#fff8c5', '#f0f6fc',
+  '#58a6ff',
+  '#ff7b72',
+  '#d2a8ff',
+  '#ffa657',
+  '#7ee787',
+  '#f778ba',
+  '#79c0ff',
+  '#e3b341',
+  '#56d364',
+  '#db6d28',
+  '#a5d6ff',
+  '#ffdcd7',
+  '#ddf4ff',
+  '#fff8c5',
+  '#f0f6fc',
 ];
 
 const getLangColor = (i) => LANG_COLORS[i % LANG_COLORS.length];
@@ -16,18 +28,20 @@ const barLayout = (langs, theme, W) => {
   const HEADER_H = 60;
   const svgH = HEADER_H + langs.length * ROW_H + 16;
 
-  const rows = langs.map(([lang, pct], i) => {
-    const filled = Math.max(2, (pct / 100) * BAR_W);
-    const y = HEADER_H + i * ROW_H;
-    const color = getLangColor(i);
-    return `
+  const rows = langs
+    .map(([lang, pct], i) => {
+      const filled = Math.max(2, (pct / 100) * BAR_W);
+      const y = HEADER_H + i * ROW_H;
+      const color = getLangColor(i);
+      return `
       <rect x="20" y="${y + 4}" width="8" height="8" rx="2" fill="${color}"/>
       <text x="34" y="${y + 13}" font-family="Arial,sans-serif" font-size="11" fill="${theme.subtextColor || theme.textColor}">${escapeSVG(lang)}</text>
       <text x="${W - 10}" y="${y + 13}" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="${theme.accentColor}" text-anchor="end">${pct}%</text>
       <rect x="20" y="${y + 20}" width="${BAR_W}" height="8" rx="4" fill="${theme.borderColor}" opacity="0.5"/>
       <rect x="20" y="${y + 20}" width="${filled}" height="8" rx="4" fill="${color}"/>
     `;
-  }).join('');
+    })
+    .join('');
 
   return { svgH, body: rows };
 };
@@ -44,15 +58,16 @@ const circleLayout = (langs, theme, W) => {
   const rows = Math.ceil(langs.length / COLS);
   const svgH = HEADER_H + rows * CELL_H + 16;
 
-  const circles = langs.map(([lang, pct], i) => {
-    const col = i % COLS;
-    const row = Math.floor(i / COLS);
-    const cx = CELL_W * col + CELL_W / 2;
-    const cy = HEADER_H + row * CELL_H + R + 12;
-    const dash = (pct / 100) * CIRC;
-    const gap = CIRC - dash;
-    const color = getLangColor(i);
-    return `
+  const circles = langs
+    .map(([lang, pct], i) => {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      const cx = CELL_W * col + CELL_W / 2;
+      const cy = HEADER_H + row * CELL_H + R + 12;
+      const dash = (pct / 100) * CIRC;
+      const gap = CIRC - dash;
+      const color = getLangColor(i);
+      return `
       <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${theme.borderColor}" stroke-width="${STROKE}" opacity="0.5"/>
       <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${color}" stroke-width="${STROKE}"
         stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
@@ -63,13 +78,19 @@ const circleLayout = (langs, theme, W) => {
       <text x="${cx}" y="${cy + R + 16}" font-family="Arial,sans-serif" font-size="10"
         fill="${theme.subtextColor || theme.textColor}" text-anchor="middle">${escapeSVG(lang)}</text>
     `;
-  }).join('');
+    })
+    .join('');
 
   return { svgH, body: circles };
 };
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
-export const generateLanguageCard = (languages, theme, layout = 'bar', view = 'top') => {
+export const generateLanguageCard = (
+  languages,
+  theme,
+  layout = 'bar',
+  view = 'top'
+) => {
   const W = 495;
   const bg = theme.background;
   const bdr = theme.borderColor;
@@ -79,9 +100,10 @@ export const generateLanguageCard = (languages, theme, layout = 'bar', view = 't
 
   const langs = Object.entries(languages).sort((a, b) => b[1] - a[1]);
 
-  const { svgH, body } = layout === 'circle'
-    ? circleLayout(langs, theme, W)
-    : barLayout(langs, theme, W);
+  const { svgH, body } =
+    layout === 'circle'
+      ? circleLayout(langs, theme, W)
+      : barLayout(langs, theme, W);
 
   const label = view === 'all' ? 'All Languages' : 'Top Languages';
 

@@ -10,7 +10,7 @@ export const cache = new LRUCache({
   max: cacheConfig.maxItems,
   ttl: cacheConfig.ttl * 1000,
   sizeCalculation: (item) => JSON.stringify(item).length,
-  maxSize: cacheConfig.maxSize
+  maxSize: cacheConfig.maxSize,
 });
 
 export const get = (key) => cache.get(key);

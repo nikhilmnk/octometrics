@@ -2,7 +2,8 @@
 export const generateContribution3DGraph = (
   grid,
   theme,
-  totalContributions = 0
+  totalContributions = 0,
+  year = null
 ) => {
   const bg = theme.background;
   const bdr = theme.borderColor;
@@ -31,10 +32,10 @@ export const generateContribution3DGraph = (
   // 3D Isometric layout requires a wider bounding box because each day shifts right and down down
   // Calculate exact bounds
   const DRAWING_W = weeks * STEP_X + 7 * STEP_X;
-  const DRAWING_H = MAX_BAR + BASE_Y + 7 * STEP_Y;
+  const DRAWING_H = MAX_BAR + BASE_Y + 7 * STEP_Y + 20; // +20 extra headroom
 
   const W = Math.max(760, PAD * 2 + DRAWING_W); // Ensure it's wide enough for typical GitHub layout
-  const H = Math.max(195, HEADER + DRAWING_H + PAD);
+  const H = Math.max(195, HEADER + DRAWING_H + PAD + 20);
 
   // colour scale — 5 levels, tinted from accent
   const barColor = (count) => {
@@ -47,14 +48,21 @@ export const generateContribution3DGraph = (
 
   const bars = [];
 
-  // Render back-to-front (weeks left-to-right, days top-to-bottom)
-  grid.forEach((week, wi) => {
+  // Render back-to-front (weeks right-to-left, days bottom-to-top)
+  // Deeper Z should be drawn first. `wi` represents X (left to right), `di` represents Y (top to bottom).
+  // In our isometric formula, higher `wi` shifts the Y coordinate UP (farther back).
+  // Therefore, higher `wi` (distant) MUST be drawn FIRST.
+  // And lower `di` (Sunday) moves UP (farther back), so lower `di` MUST be drawn FIRST.
+
+  [...grid].reverse().forEach((week, revWi) => {
+    const wi = weeks - 1 - revWi;
     week.forEach((count, di) => {
       if (count === 0) return;
 
       // Calculate isometric base coordinate (bx, by)
-      const bx = PAD + (wi * STEP_X) + (di * STEP_X * 0.5); // x shifts right per week, and slightly right per day
-      const by = HEADER + DRAWING_H - BASE_Y + (di * STEP_Y) - (wi * STEP_Y * 0.2); // y shifts down per day
+      const bx = PAD + wi * STEP_X + di * STEP_X * 0.5; // x shifts right per week, and slightly right per day
+      const by =
+        HEADER + DRAWING_H - BASE_Y + di * STEP_Y - wi * STEP_Y * 0.2 + 20; // y shifts down per day, shifted down slightly by 20 for header clearance
 
       const bh = Math.max(3, Math.round((count / maxCount) * MAX_BAR));
       const color = barColor(count);
@@ -104,7 +112,7 @@ export const generateContribution3DGraph = (
 
   <!-- Header -->
   <text x="${PAD + 22}" y="26" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="${txt}">3D Contribution Graph</text>
-  <text x="${PAD + 22}" y="41" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${fmtTotal} contributions • isometric bars</text>
+  <text x="${PAD + 22}" y="41" font-family="Arial,sans-serif" font-size="10" fill="${sub}">${fmtTotal} contributions • ${year ? `${year} isometric bars` : 'isometric bars'}</text>
 
   <!-- Divider -->
   <line x1="${PAD}" y1="52" x2="${W - PAD}" y2="52" stroke="${bdr}" stroke-width="1" opacity="0.6"/>

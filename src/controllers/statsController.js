@@ -1,6 +1,9 @@
 import { validateUsername } from '../utils/validator.js';
 import { get, set } from '../utils/cache.js';
-import { fetchUserProfile, fetchUserRepositories } from '../services/githubService.js';
+import {
+  fetchUserProfile,
+  fetchUserRepositories,
+} from '../services/githubService.js';
 import { getUserStats } from '../engines/statsEngine.js';
 import { generateStatsCard } from '../svg/statsCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
@@ -31,7 +34,8 @@ export const statsController = async (req, res) => {
   } catch (error) {
     let errorMessage = 'Error fetching stats';
     if (error.message.includes('404')) errorMessage = 'User not found';
-    else if (error.message.includes('403')) errorMessage = 'Rate limit exceeded';
+    else if (error.message.includes('403'))
+      errorMessage = 'Rate limit exceeded';
     const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">${errorMessage}</text></svg>`;
     res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
   }

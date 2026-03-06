@@ -10,7 +10,7 @@ export const getLanguageStats = (repos, topCount = 5) => {
 
   const languageCount = {};
 
-  repos.forEach(repo => {
+  repos.forEach((repo) => {
     if (repo.language) {
       languageCount[repo.language] = (languageCount[repo.language] || 0) + 1;
     }

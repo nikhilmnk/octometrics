@@ -38,7 +38,11 @@ const getIconCfg = (tech) => {
     if (key.includes(k) || k.includes(key)) return { ...v, full: tech };
   }
   // fallback — generic pill
-  return { color: '#6e7681', label: tech.slice(0, 3).toUpperCase(), full: tech };
+  return {
+    color: '#6e7681',
+    label: tech.slice(0, 3).toUpperCase(),
+    full: tech,
+  };
 };
 
 // ── SVG for a single tech badge pill ────────────────────────────────────────
@@ -55,7 +59,8 @@ const techBadge = (tech, x, y) => {
       <circle cx="12" cy="11" r="4" fill="${cfg.color}"/>
       <text x="22" y="15" font-family="Arial,sans-serif" font-size="10" font-weight="bold"
         fill="${cfg.color}" text-anchor="start">${label}</text>
-    </g>`, width: PW + 8
+    </g>`,
+    width: PW + 8,
   };
 };
 
@@ -119,10 +124,13 @@ const cornerAccents = (W, H, color) => `
 // ── Social handle pill ───────────────────────────────────────────────────────
 const socialPills = (socials, cx, y, acc, sub) => {
   if (!socials.length) return '';
-  const pills = socials.map(s => escapeSVG(s));
-  const total = pills.reduce((sum, s) => sum + s.length * 7 + 28, 0) + (pills.length - 1) * 8;
-  let out = '', ox = cx - total / 2;
-  pills.forEach(p => {
+  const pills = socials.map((s) => escapeSVG(s));
+  const total =
+    pills.reduce((sum, s) => sum + s.length * 7 + 28, 0) +
+    (pills.length - 1) * 8;
+  let out = '',
+    ox = cx - total / 2;
+  pills.forEach((p) => {
     const pw = p.length * 7 + 28;
     out += `<rect x="${ox}" y="${y}" width="${pw}" height="20" rx="10" fill="${acc}" opacity="0.15"/>
       <text x="${ox + pw / 2}" y="${y + 14}" font-family="Arial,sans-serif" font-size="11" fill="${sub}" text-anchor="middle">${p}</text>`;
@@ -141,7 +149,17 @@ const locationTag = (loc, cx, y, sub) => {
 
 // ── MAIN CARD ─────────────────────────────────────────────────────────────────
 export const generateBannerCard = (data, theme) => {
-  const { name, title, subtitle, location, social, techStack, wave: showWave, pattern, align } = data;
+  const {
+    name,
+    title,
+    subtitle,
+    location,
+    social,
+    techStack,
+    wave: showWave,
+    pattern,
+    align,
+  } = data;
 
   const W = 860;
 
@@ -167,10 +185,13 @@ export const generateBannerCard = (data, theme) => {
   // -- Tech badges row
   let techSVG = '';
   if (techStack.length > 0) {
-    const badgeData = techStack.map(t => techBadge(t, 0, 0));
+    const badgeData = techStack.map((t) => techBadge(t, 0, 0));
     const totalW = badgeData.reduce((s, b) => s + b.width, 0);
     let bx = align === 'left' ? cx : cx - totalW / 2;
-    badgeData.forEach(b => { techSVG += b.svg.replace('translate(0,0)', `translate(${bx},0)`); bx += b.width; });
+    badgeData.forEach((b) => {
+      techSVG += b.svg.replace('translate(0,0)', `translate(${bx},0)`);
+      bx += b.width;
+    });
   }
 
   // -- Vertical positioning
@@ -184,10 +205,12 @@ export const generateBannerCard = (data, theme) => {
   const techY = socialY + 24;
 
   // build background pattern
-  const bgPattern = pattern === 'grid'
-    ? grid(W, H, ico)
-    : pattern === 'none' ? ''
-      : dots(W, H, ico);
+  const bgPattern =
+    pattern === 'grid'
+      ? grid(W, H, ico)
+      : pattern === 'none'
+        ? ''
+        : dots(W, H, ico);
 
   // Gradient: diagonal, theme bg → translucent accent
   const gradId = 'bg';
@@ -243,12 +266,20 @@ export const generateBannerCard = (data, theme) => {
     <rect x="${align === 'left' ? cx : cx - 60}" y="${nameY + 5}" width="120" height="3" rx="2" fill="${acc}" opacity="0.7"/>
 
     <!-- Title -->
-    ${title ? `<text x="${cx}" y="${titleY}" font-family="Arial,sans-serif" font-size="18" font-weight="600"
-      fill="${acc}" text-anchor="${anchor}" opacity="0.95">${escapeSVG(title)}</text>` : ''}
+    ${
+      title
+        ? `<text x="${cx}" y="${titleY}" font-family="Arial,sans-serif" font-size="18" font-weight="600"
+      fill="${acc}" text-anchor="${anchor}" opacity="0.95">${escapeSVG(title)}</text>`
+        : ''
+    }
 
     <!-- Subtitle -->
-    ${subtitle ? `<text x="${cx}" y="${subtitleY}" font-family="Arial,sans-serif" font-size="14"
-      fill="${sub}" text-anchor="${anchor}" opacity="0.85">${escapeSVG(subtitle)}</text>` : ''}
+    ${
+      subtitle
+        ? `<text x="${cx}" y="${subtitleY}" font-family="Arial,sans-serif" font-size="14"
+      fill="${sub}" text-anchor="${anchor}" opacity="0.85">${escapeSVG(subtitle)}</text>`
+        : ''
+    }
 
     <!-- Location -->
     ${locationTag(location, cx, locY, sub)}

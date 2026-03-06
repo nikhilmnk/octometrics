@@ -8,5 +8,5 @@ const LOG_LEVEL = config.LOG_LEVEL;
  * Provides consistent JSON logging across the application
  */
 export const logger = pino({
-  level: LOG_LEVEL
+  level: LOG_LEVEL,
 });

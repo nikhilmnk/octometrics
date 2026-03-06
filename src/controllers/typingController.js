@@ -1,19 +1,19 @@
-import { generateTyping } from "../engines/typingEngine.js";
-import { generateTypingCard } from "../svg/typingCard.js";
-import { loadTheme } from "../utils/themeLoader.js";
+import { generateTyping } from '../engines/typingEngine.js';
+import { generateTypingCard } from '../svg/typingCard.js';
+import { loadTheme } from '../utils/themeLoader.js';
 
 export const typingController = async (req, res) => {
   try {
     const {
-      font = "Fira Code",
-      size = "24",
-      duration = "3000",
-      pause = "1000",
-      color = "00F7FF",
-      width = "700",
-      center = "false",
-      vCenter = "false",
-      theme = "dark"
+      font = 'Fira Code',
+      size = '24',
+      duration = '3000',
+      pause = '1000',
+      color = '00F7FF',
+      width = '700',
+      center = 'false',
+      vCenter = 'false',
+      theme = 'dark',
     } = req.query;
 
     let { lines } = req.query;
@@ -30,12 +30,12 @@ export const typingController = async (req, res) => {
         </text>
       </svg>`;
 
-      res.setHeader("Content-Type", "image/svg+xml");
+      res.setHeader('Content-Type', 'image/svg+xml');
       return res.send(errorSvg);
     }
 
     // decode "+" -> space
-    lines = decodeURIComponent(lines.replace(/\+/g, " "));
+    lines = decodeURIComponent(lines.replace(/\+/g, ' '));
 
     // allow ; or ,
     const parsedLines = lines
@@ -58,16 +58,16 @@ export const typingController = async (req, res) => {
       size: parsedSize,
       width: parsedWidth,
       color,
-      center: center === "true",
-      vCenter: vCenter === "true",
-      theme: themeObj
+      center: center === 'true',
+      vCenter: vCenter === 'true',
+      theme: themeObj,
     });
 
-    res.setHeader("Content-Type", "image/svg+xml");
-    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'no-cache');
     res.send(svg);
   } catch (error) {
-    console.log('error', error)
+    console.log('error', error);
     const errorSvg = `
     <svg width="500" height="200" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="#ffcccc"/>
@@ -76,7 +76,7 @@ export const typingController = async (req, res) => {
       </text>
     </svg>`;
 
-    res.setHeader("Content-Type", "image/svg+xml");
+    res.setHeader('Content-Type', 'image/svg+xml');
     res.send(errorSvg);
   }
 };

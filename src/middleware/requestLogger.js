@@ -5,7 +5,7 @@ import { logger } from '../utils/logger.js';
  */
 export const requestLogger = (req, res, next) => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     logger.info(
@@ -14,11 +14,11 @@ export const requestLogger = (req, res, next) => {
         path: req.path,
         status: res.statusCode,
         duration,
-        ip: req.ip
+        ip: req.ip,
       },
       'HTTP request completed'
     );
   });
-  
+
   next();
 };

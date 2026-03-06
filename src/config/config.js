@@ -43,7 +43,7 @@ export const config = Object.freeze({
 
   // Response configuration
   CACHE_CONTROL_PUBLIC: 'public, max-age=21600', // 6 hours
-  CACHE_CONTROL_NO_CACHE: 'no-cache, no-store, must-revalidate'
+  CACHE_CONTROL_NO_CACHE: 'no-cache, no-store, must-revalidate',
 });
 
 /**
@@ -82,7 +82,7 @@ export function validateConfig() {
       port: config.PORT,
       nodeEnv: config.NODE_ENV,
       cacheTtl: config.CACHE_TTL,
-      logLevel: config.LOG_LEVEL
+      logLevel: config.LOG_LEVEL,
     },
     'Configuration validated'
   );
@@ -97,24 +97,24 @@ export function getFeatureConfig(feature) {
       token: config.GITHUB_TOKEN,
       rateLimit: config.API_RATE_LIMIT,
       timeout: config.API_TIMEOUT,
-      graphqlEnabled: config.ENABLE_GRAPHQL
+      graphqlEnabled: config.ENABLE_GRAPHQL,
     },
     cache: {
       ttl: config.CACHE_TTL,
       maxItems: config.CACHE_MAX_ITEMS,
       maxSize: config.CACHE_MAX_SIZE,
-      enabled: config.ENABLE_CACHING
+      enabled: config.ENABLE_CACHING,
     },
     server: {
       port: config.PORT,
       host: config.HOST,
-      nodeEnv: config.NODE_ENV
+      nodeEnv: config.NODE_ENV,
     },
     svg: {
       width: config.SVG_WIDTH,
       maxWidth: config.SVG_MAX_WIDTH,
-      padding: config.SVG_PADDING
-    }
+      padding: config.SVG_PADDING,
+    },
   };
 
   return featureConfigs[feature] || null;

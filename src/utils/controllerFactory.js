@@ -14,7 +14,7 @@ export function createController({
   fetchData,
   renderSVG,
   validateParams = () => true,
-  cacheDuration = config.CACHE_TTL
+  cacheDuration = config.CACHE_TTL,
 }) {
   return async (req, res) => {
     const startTime = Date.now();
@@ -24,17 +24,17 @@ export function createController({
       // Validate input parameters
       if (!validator.isValidUsername(username)) {
         logger.warn({ username }, 'Invalid username parameter');
-        return res.set('Content-Type', 'image/svg+xml').send(
-          errorSVG('Invalid username parameter')
-        );
+        return res
+          .set('Content-Type', 'image/svg+xml')
+          .send(errorSVG('Invalid username parameter'));
       }
 
       // Run custom validation if provided
       if (!validateParams(req.query)) {
         logger.warn({ query: req.query }, 'Custom validation failed');
-        return res.set('Content-Type', 'image/svg+xml').send(
-          errorSVG('Invalid parameters')
-        );
+        return res
+          .set('Content-Type', 'image/svg+xml')
+          .send(errorSVG('Invalid parameters'));
       }
 
       // Build cache key with theme
@@ -43,10 +43,7 @@ export function createController({
       // Check cache
       const cached = cache.get(key);
       if (cached) {
-        logger.debug(
-          { key, duration: Date.now() - startTime },
-          'Cache hit'
-        );
+        logger.debug({ key, duration: Date.now() - startTime }, 'Cache hit');
         return res.set('Content-Type', 'image/svg+xml').send(cached);
       }
 
@@ -75,13 +72,18 @@ export function createController({
       return res.set('Content-Type', 'image/svg+xml').send(svg);
     } catch (error) {
       logger.error(
-        { username, cacheKey, error: error.message, duration: Date.now() - startTime },
+        {
+          username,
+          cacheKey,
+          error: error.message,
+          duration: Date.now() - startTime,
+        },
         'Controller error'
       );
 
-      return res.set('Content-Type', 'image/svg+xml').send(
-        errorSVG(`Error generating ${cacheKey}`)
-      );
+      return res
+        .set('Content-Type', 'image/svg+xml')
+        .send(errorSVG(`Error generating ${cacheKey}`));
     }
   };
 }
@@ -94,7 +96,7 @@ export function createBatchController({
   renderSVG,
   cacheKey,
   validateParams = () => true,
-  cacheDuration = config.CACHE_TTL
+  cacheDuration = config.CACHE_TTL,
 }) {
   return async (req, res) => {
     const startTime = Date.now();
@@ -103,16 +105,16 @@ export function createBatchController({
     try {
       if (!username || !validator.isValidUsername(username)) {
         logger.warn({ username }, 'Invalid username parameter');
-        return res.set('Content-Type', 'image/svg+xml').send(
-          errorSVG('Invalid username parameter')
-        );
+        return res
+          .set('Content-Type', 'image/svg+xml')
+          .send(errorSVG('Invalid username parameter'));
       }
 
       if (!validateParams(req.query)) {
         logger.warn({ query: req.query }, 'Custom validation failed');
-        return res.set('Content-Type', 'image/svg+xml').send(
-          errorSVG('Invalid parameters')
-        );
+        return res
+          .set('Content-Type', 'image/svg+xml')
+          .send(errorSVG('Invalid parameters'));
       }
 
       const key = `${cacheKey}:${username}:${theme}`;
@@ -123,19 +125,25 @@ export function createBatchController({
         return res.set('Content-Type', 'image/svg+xml').send(cached);
       }
 
-      const loadedTheme = themeLoader.getTheme(theme) || themeLoader.getTheme('dark');
+      const loadedTheme =
+        themeLoader.getTheme(theme) || themeLoader.getTheme('dark');
 
       // Fetch all data sources in parallel
-      logger.debug({ username, dataFetchers: Object.keys(dataFetchers) }, 'Fetching batch data');
+      logger.debug(
+        { username, dataFetchers: Object.keys(dataFetchers) },
+        'Fetching batch data'
+      );
       const data = {};
-      const promises = Object.entries(dataFetchers).map(async ([key, fetcher]) => {
-        try {
-          data[key] = await fetcher(username);
-        } catch (error) {
-          logger.warn({ key, error: error.message }, 'Data fetcher failed');
-          data[key] = null;
+      const promises = Object.entries(dataFetchers).map(
+        async ([key, fetcher]) => {
+          try {
+            data[key] = await fetcher(username);
+          } catch (error) {
+            logger.warn({ key, error: error.message }, 'Data fetcher failed');
+            data[key] = null;
+          }
         }
-      });
+      );
 
       await Promise.all(promises);
 
@@ -153,13 +161,18 @@ export function createBatchController({
       return res.set('Content-Type', 'image/svg+xml').send(svg);
     } catch (error) {
       logger.error(
-        { username, cacheKey, error: error.message, duration: Date.now() - startTime },
+        {
+          username,
+          cacheKey,
+          error: error.message,
+          duration: Date.now() - startTime,
+        },
         'Batch controller error'
       );
 
-      return res.set('Content-Type', 'image/svg+xml').send(
-        errorSVG(`Error generating ${cacheKey}`)
-      );
+      return res
+        .set('Content-Type', 'image/svg+xml')
+        .send(errorSVG(`Error generating ${cacheKey}`));
     }
   };
 }

@@ -4,9 +4,16 @@ import { config, validateConfig } from './config/config.js';
 import { router } from './api/router.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { requestLogger } from './middleware/requestLogger.js';
-import { svgResponseHeaders, jsonResponseHeaders } from './middleware/responseHeaders.js';
+import {
+  svgResponseHeaders,
+  jsonResponseHeaders,
+} from './middleware/responseHeaders.js';
 import { apiLimiter } from './middleware/ratelimit.js';
-import { healthCheck, readinessCheck, metricsCheck } from './middleware/healthCheck.js';
+import {
+  healthCheck,
+  readinessCheck,
+  metricsCheck,
+} from './middleware/healthCheck.js';
 
 // Validate configuration on startup
 try {
@@ -55,7 +62,7 @@ app.use((req, res) => {
   logger.warn({ path: req.path, method: req.method }, 'Route not found');
   res.status(404).json({
     error: 'Not found',
-    path: req.path
+    path: req.path,
   });
 });
 
@@ -89,7 +96,10 @@ process.on('SIGINT', () => {
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  logger.error({ error: error.message, stack: error.stack }, 'Uncaught exception');
+  logger.error(
+    { error: error.message, stack: error.stack },
+    'Uncaught exception'
+  );
   process.exit(1);
 });
 

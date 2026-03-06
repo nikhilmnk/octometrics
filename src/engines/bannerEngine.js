@@ -3,7 +3,10 @@
  */
 export const generateBanner = (name, title, tech, options = {}) => {
   const techStack = tech
-    ? tech.split(',').map(t => t.trim()).filter(Boolean)
+    ? tech
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean)
     : [];
 
   return {
@@ -11,10 +14,15 @@ export const generateBanner = (name, title, tech, options = {}) => {
     title: title ? title.trim() : null,
     subtitle: options.subtitle ? options.subtitle.trim() : null,
     location: options.location ? options.location.trim() : null,
-    social: options.social ? options.social.split(',').map(s => s.trim()).filter(Boolean) : [],
+    social: options.social
+      ? options.social
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [],
     techStack,
-    wave: options.wave !== 'false',      // animated wave on by default
-    pattern: options.pattern || 'dots',     // 'dots' | 'grid' | 'none'
-    align: options.align || 'center',   // 'center' | 'left'
+    wave: options.wave !== 'false', // animated wave on by default
+    pattern: options.pattern || 'dots', // 'dots' | 'grid' | 'none'
+    align: options.align || 'center', // 'center' | 'left'
   };
 };

@@ -10,9 +10,9 @@ export const languagesController = async (req, res) => {
     const {
       username,
       theme = 'dark',
-      layout = 'bar',     // 'bar' | 'circle'
-      view = 'top',     // 'top' | 'all'
-      top = '5',       // how many top languages (ignored when view=all)
+      layout = 'bar', // 'bar' | 'circle'
+      view = 'top', // 'top' | 'all'
+      top = '5', // how many top languages (ignored when view=all)
     } = req.query;
 
     if (!validateUsername(username)) {
@@ -27,7 +27,10 @@ export const languagesController = async (req, res) => {
     }
 
     const repos = await fetchUserRepositories(username);
-    const { all, top: topLangs } = getLanguageStats(repos, parseInt(top, 10) || 5);
+    const { all, top: topLangs } = getLanguageStats(
+      repos,
+      parseInt(top, 10) || 5
+    );
 
     const languages = view === 'all' ? all : topLangs;
 
@@ -44,7 +47,8 @@ export const languagesController = async (req, res) => {
   } catch (error) {
     let errorMessage = 'Error fetching languages';
     if (error.message.includes('404')) errorMessage = 'User not found';
-    else if (error.message.includes('403')) errorMessage = 'Rate limit exceeded';
+    else if (error.message.includes('403'))
+      errorMessage = 'Rate limit exceeded';
     const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">${errorMessage}</text></svg>`;
     res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
   }
