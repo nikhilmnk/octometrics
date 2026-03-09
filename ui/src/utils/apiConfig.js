@@ -1,4 +1,5 @@
-export const API_BASE = import.meta.env.VITE_API_BASE;
+export const API_BASE =
+  import.meta.env.VITE_API_BASE || 'https://octometrics.vercel.app';
 
 export const MARKDOWN_ELEMENTS = {
   heading: {
@@ -380,7 +381,6 @@ export function getConfigSchema(widgetType) {
     });
   });
 
-  // Add optional fields
   schema.push(...endpoint.optional);
 
   return schema;

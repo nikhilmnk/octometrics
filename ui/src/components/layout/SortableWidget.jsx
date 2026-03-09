@@ -14,7 +14,7 @@ const ApiWidgetPreview = ({ widget }) => {
   const apiUrl = buildApiUrl(
     widget.type,
     widget.config,
-    import.meta.env.VITE_API_BASE
+    import.meta.env.VITE_API_BASE || 'https://octometrics.vercel.app'
   );
 
   return (
