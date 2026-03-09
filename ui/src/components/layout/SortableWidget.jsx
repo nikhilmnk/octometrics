@@ -11,11 +11,19 @@ import { ListElement } from '../elements/ListElement';
 
 const ApiWidgetPreview = ({ widget }) => {
   const [loading, setLoading] = useState(true);
-  const apiUrl = buildApiUrl(widget.type, widget.config, import.meta.env.VITE_API_BASE);
+  const apiUrl = buildApiUrl(
+    widget.type,
+    widget.config,
+    import.meta.env.VITE_API_BASE
+  );
 
   return (
     <div>
-      {loading && <div className="text-xs text-gray-400 mb-2 animate-pulse">Loading preview...</div>}
+      {loading && (
+        <div className="text-xs text-gray-400 mb-2 animate-pulse">
+          Loading preview...
+        </div>
+      )}
       <img
         src={apiUrl}
         alt={widget.type}
@@ -48,7 +56,14 @@ const MarkdownElementPreview = ({ widget }) => {
 };
 
 export const SortableWidget = ({ widget, isSelected, onSelect }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: widget.id,
   });
 
@@ -81,7 +96,11 @@ export const SortableWidget = ({ widget, isSelected, onSelect }) => {
         isSelected ? 'selected' : ''
       } ${isDragging ? 'opacity-70' : 'opacity-100'}`}
     >
-      {isApiWidget ? <ApiWidgetPreview widget={widget} /> : <MarkdownElementPreview widget={widget} />}
+      {isApiWidget ? (
+        <ApiWidgetPreview widget={widget} />
+      ) : (
+        <MarkdownElementPreview widget={widget} />
+      )}
     </div>
   );
 };

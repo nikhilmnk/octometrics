@@ -1,7 +1,15 @@
 import React from 'react';
 import { API_ENDPOINTS, MARKDOWN_ELEMENTS } from '../../utils/apiConfig';
 
-const WIDGET_TYPES = ['stats', 'languages', 'repos', 'banner', 'typing', 'contributions', 'badges'];
+const WIDGET_TYPES = [
+  'stats',
+  'languages',
+  'repos',
+  'banner',
+  'typing',
+  'contributions',
+  'badges',
+];
 const MARKDOWN_TYPES = ['heading', 'text', 'divider', 'image', 'code', 'list'];
 
 const buildLibrary = (types, source) =>
@@ -46,12 +54,16 @@ export const Sidebar = ({ onAddWidget }) => {
       </div>
 
       <div className="p-4 space-y-3">
-        <h3 className="text-xs uppercase tracking-wide  text-gray-400">Widgets</h3>
+        <h3 className="text-xs uppercase tracking-wide  text-gray-400">
+          Widgets
+        </h3>
         {widgetLibrary.map(renderCard)}
       </div>
 
       <div className="p-4 space-y-3 border-t border-dark-border">
-        <h3 className="text-xs uppercase tracking-wide text-gray-400">Markdown Elements</h3>
+        <h3 className="text-xs uppercase tracking-wide text-gray-400">
+          Markdown Elements
+        </h3>
         {markdownLibrary.map(renderCard)}
       </div>
     </div>

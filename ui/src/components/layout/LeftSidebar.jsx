@@ -30,7 +30,9 @@ export const LeftSidebar = ({ onAddWidget }) => {
       {/* Header */}
       <div className="p-2 border-b border-dark-border sticky top-0 bg-dark-panel z-10">
         <h2 className="text-lg font-bold text-dark-text">📦 Components</h2>
-        <p className="text-xs text-gray-500 mt-1">{widgetLibrary.length} widgets available</p>
+        <p className="text-xs text-gray-500 mt-1">
+          {widgetLibrary.length} widgets available
+        </p>
       </div>
 
       {/* API Widgets Section */}
@@ -57,7 +59,9 @@ export const LeftSidebar = ({ onAddWidget }) => {
 
       {/* Markdown Elements Section */}
       <div className="p-4 flex flex-col gap-3 overflow-y-auto flex-1">
-        <h3 className="text-sm font-semibold text-gray-400 mb-2">Markdown Elements</h3>
+        <h3 className="text-sm font-semibold text-gray-400 mb-2">
+          Markdown Elements
+        </h3>
         {elementLibrary.map((widget) => (
           <div
             key={widget.id}

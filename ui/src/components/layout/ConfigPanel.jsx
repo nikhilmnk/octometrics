@@ -21,7 +21,8 @@ const markdownFieldSchema = {
 };
 
 export const ConfigPanel = () => {
-  const { widgets, selectedWidgetId, updateWidget, removeWidget } = useBuilderStore();
+  const { widgets, selectedWidgetId, updateWidget, removeWidget } =
+    useBuilderStore();
   const widget = widgets.find((entry) => entry.id === selectedWidgetId);
 
   if (!widget) {
@@ -49,7 +50,8 @@ export const ConfigPanel = () => {
           .filter((key) => key !== 'username')
           .map((key) => ({
             key,
-            label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+            label:
+              key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
             type: 'text',
             required: true,
           })),
@@ -82,7 +84,9 @@ export const ConfigPanel = () => {
             value={value ?? ''}
             min={field.min}
             max={field.max}
-            onChange={(event) => handleChange(field.key, Number(event.target.value) || '')}
+            onChange={(event) =>
+              handleChange(field.key, Number(event.target.value) || '')
+            }
             className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
           />
         );
@@ -122,7 +126,9 @@ export const ConfigPanel = () => {
             <input
               type="checkbox"
               checked={Boolean(value)}
-              onChange={(event) => handleChange(field.key, event.target.checked)}
+              onChange={(event) =>
+                handleChange(field.key, event.target.checked)
+              }
               className="w-4 h-4 bg-dark-bg border border-dark-border rounded cursor-pointer accent-dark-accent"
             />
             <span className="text-sm text-gray-400">{field.label}</span>
@@ -179,14 +185,18 @@ export const ConfigPanel = () => {
 
       <div className="p-4 flex flex-col gap-5 overflow-y-auto flex-1">
         {allFields.length === 0 && (
-          <p className="text-xs text-gray-500">This element has no configurable fields.</p>
+          <p className="text-xs text-gray-500">
+            This element has no configurable fields.
+          </p>
         )}
 
         {allFields.map((field) => (
           <div key={field.key} className="flex flex-col gap-2">
             <label className="text-sm font-medium text-dark-text flex items-center gap-1">
               {field.label}
-              {field.required && <span className="text-xs text-red-400">*</span>}
+              {field.required && (
+                <span className="text-xs text-red-400">*</span>
+              )}
             </label>
             {renderField(field)}
           </div>

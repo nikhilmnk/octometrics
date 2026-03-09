@@ -1,9 +1,13 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { API_ENDPOINTS, buildApiUrl, getDefaultConfig } from '../../utils/apiConfig';
+import {
+  API_ENDPOINTS,
+  buildApiUrl,
+  getDefaultConfig,
+} from '../../utils/apiConfig';
 
 const createWidgetId = () =>
-  (typeof crypto !== 'undefined' && crypto.randomUUID)
+  typeof crypto !== 'undefined' && crypto.randomUUID
     ? crypto.randomUUID()
     : `widget-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -23,17 +27,17 @@ export const useBuilderStore = create(
             if (widget.type === 'badges') {
               return {
                 ...widget,
-                config: { ...widget.config, user: username }
+                config: { ...widget.config, user: username },
               };
             }
             if (endpoint && endpoint.required.includes('username')) {
               return {
                 ...widget,
-                config: { ...widget.config, username }
+                config: { ...widget.config, username },
               };
             }
             return widget;
-          })
+          }),
         }));
       },
 
@@ -141,7 +145,9 @@ export const useBuilderStore = create(
               case 'code':
                 return `\`\`\`${widget.config.language || ''}\n${widget.config.code || ''}\n\`\`\``;
               case 'list':
-                return (widget.config.items || []).map((i) => `- ${i}`).join('\n');
+                return (widget.config.items || [])
+                  .map((i) => `- ${i}`)
+                  .join('\n');
               default:
                 return '';
             }

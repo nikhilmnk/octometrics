@@ -1,11 +1,23 @@
 import React, { useMemo, useState } from 'react';
-import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { generateMarkdownFromWidgets } from '../../utils/apiConfig';
 import { SortableWidget } from './SortableWidget';
 
 const extractDroppedType = (event) => {
-  const directType = event.dataTransfer.getData('application/x-builder-element');
+  const directType = event.dataTransfer.getData(
+    'application/x-builder-element'
+  );
   if (directType) return directType;
 
   const plainType = event.dataTransfer.getData('text/plain');
@@ -45,8 +57,14 @@ export const Canvas = ({
       activationConstraint: { distance: 6 },
     })
   );
-  const sortableIds = useMemo(() => widgets.map((widget) => widget.id), [widgets]);
-  const markdown = useMemo(() => generateMarkdownFromWidgets(widgets, import.meta.env.VITE_API_BASE), [widgets]);
+  const sortableIds = useMemo(
+    () => widgets.map((widget) => widget.id),
+    [widgets]
+  );
+  const markdown = useMemo(
+    () => generateMarkdownFromWidgets(widgets, import.meta.env.VITE_API_BASE),
+    [widgets]
+  );
 
   const handleCopyMarkdown = () => {
     navigator.clipboard.writeText(markdown);
@@ -87,7 +105,9 @@ export const Canvas = ({
     >
       <div className="sticky top-0 bg-dark-panel border-b border-dark-border px-8 py-2 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-dark-text">{isCodeMode ? 'Code' : 'Preview'}</span>
+          <span className="text-sm font-medium text-dark-text">
+            {isCodeMode ? 'Code' : 'Preview'}
+          </span>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
@@ -119,8 +139,12 @@ export const Canvas = ({
               onDrop={(event) => handleExternalDrop(event, 0)}
             >
               <div className="text-center">
-                <p className="text-gray-500 text-lg mb-2">Drag components from the left panel to build your README</p>
-                <p className="text-xs text-gray-600">Click components to add them at the end</p>
+                <p className="text-gray-500 text-lg mb-2">
+                  Drag components from the left panel to build your README
+                </p>
+                <p className="text-xs text-gray-600">
+                  Click components to add them at the end
+                </p>
               </div>
             </div>
           ) : !isCodeMode ? (
@@ -130,7 +154,10 @@ export const Canvas = ({
               onDragStart={handleSortStart}
               onDragEnd={handleSortEnd}
             >
-              <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
+              <SortableContext
+                items={sortableIds}
+                strategy={verticalListSortingStrategy}
+              >
                 <div className="space-y-1 max-w-2xl mx-auto">
                   <DropZone
                     active={dropIndex === 0}
@@ -147,7 +174,9 @@ export const Canvas = ({
                       />
                       <DropZone
                         active={dropIndex === index + 1}
-                        onDragOver={(event) => handleExternalDragOver(event, index + 1)}
+                        onDragOver={(event) =>
+                          handleExternalDragOver(event, index + 1)
+                        }
                         onDrop={(event) => handleExternalDrop(event, index + 1)}
                       />
                     </React.Fragment>
@@ -160,7 +189,10 @@ export const Canvas = ({
               <div className="relative bg-[#0d1117] border border-gray-800 rounded-lg">
                 <div className="flex justify-between items-center px-3 py-2 border-b border-gray-800 text-xs text-gray-400">
                   markdown
-                  <button onClick={handleCopyMarkdown} className="hover:text-white">
+                  <button
+                    onClick={handleCopyMarkdown}
+                    className="hover:text-white"
+                  >
                     Copy
                   </button>
                 </div>

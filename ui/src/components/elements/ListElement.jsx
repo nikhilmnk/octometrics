@@ -1,7 +1,9 @@
 import React from 'react';
 
 export const ListElement = ({ config }) => {
-  const items = (config?.items || []).filter((item) => item && item.trim() !== '');
+  const items = (config?.items || []).filter(
+    (item) => item && item.trim() !== ''
+  );
 
   if (items.length === 0) {
     return <p className="text-xs text-gray-500">Add one or more list items.</p>;
@@ -15,4 +17,3 @@ export const ListElement = ({ config }) => {
     </ul>
   );
 };
-

@@ -40,7 +40,13 @@ export const API_ENDPOINTS = {
     icon: '📊',
     required: ['username'],
     optional: [
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
     ],
   },
   languages: {
@@ -49,10 +55,35 @@ export const API_ENDPOINTS = {
     icon: '💻',
     required: ['username'],
     optional: [
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
-      { key: 'top', type: 'number', label: 'Number of Languages', min: 1, max: 20, default: 5 },
-      { key: 'layout', type: 'select', label: 'Layout', options: ['bar', 'circle'], default: 'bar' },
-      { key: 'view', type: 'select', label: 'View', options: ['top', 'all'], default: 'top' },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
+      {
+        key: 'top',
+        type: 'number',
+        label: 'Number of Languages',
+        min: 1,
+        max: 20,
+        default: 5,
+      },
+      {
+        key: 'layout',
+        type: 'select',
+        label: 'Layout',
+        options: ['bar', 'circle'],
+        default: 'bar',
+      },
+      {
+        key: 'view',
+        type: 'select',
+        label: 'View',
+        options: ['top', 'all'],
+        default: 'top',
+      },
     ],
   },
   repos: {
@@ -61,9 +92,28 @@ export const API_ENDPOINTS = {
     icon: '📚',
     required: ['username'],
     optional: [
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
-      { key: 'count', type: 'number', label: 'Number of Repos', min: 1, max: 20, default: 6 },
-      { key: 'sort', type: 'select', label: 'Sort By', options: ['stars', 'forks', 'watchers', 'updated'], default: 'stars' },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
+      {
+        key: 'count',
+        type: 'number',
+        label: 'Number of Repos',
+        min: 1,
+        max: 20,
+        default: 6,
+      },
+      {
+        key: 'sort',
+        type: 'select',
+        label: 'Sort By',
+        options: ['stars', 'forks', 'watchers', 'updated'],
+        default: 'stars',
+      },
     ],
   },
   banner: {
@@ -76,10 +126,33 @@ export const API_ENDPOINTS = {
       { key: 'subtitle', type: 'text', label: 'Subtitle' },
       { key: 'tech', type: 'text', label: 'Tech Stack (comma-separated)' },
       { key: 'location', type: 'text', label: 'Location' },
-      { key: 'pattern', type: 'select', label: 'Pattern', options: ['dots', 'grid', 'none'], default: 'dots' },
-      { key: 'wave', type: 'checkbox', label: 'Show Wave Animation', default: true },
-      { key: 'align', type: 'select', label: 'Alignment', options: ['center', 'left'], default: 'center' },
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
+      {
+        key: 'pattern',
+        type: 'select',
+        label: 'Pattern',
+        options: ['dots', 'grid', 'none'],
+        default: 'dots',
+      },
+      {
+        key: 'wave',
+        type: 'checkbox',
+        label: 'Show Wave Animation',
+        default: true,
+      },
+      {
+        key: 'align',
+        type: 'select',
+        label: 'Alignment',
+        options: ['center', 'left'],
+        default: 'center',
+      },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
     ],
   },
   typing: {
@@ -88,9 +161,29 @@ export const API_ENDPOINTS = {
     icon: '⌨️',
     required: ['lines'],
     optional: [
-      { key: 'speed', type: 'number', label: 'Speed (chars/sec)', min: 1, max: 200, default: 80 },
-      { key: 'pause', type: 'number', label: 'Pause Between Lines (ms)', min: 100, max: 5000, default: 1000 },
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
+      {
+        key: 'speed',
+        type: 'number',
+        label: 'Speed (chars/sec)',
+        min: 1,
+        max: 200,
+        default: 80,
+      },
+      {
+        key: 'pause',
+        type: 'number',
+        label: 'Pause Between Lines (ms)',
+        min: 100,
+        max: 5000,
+        default: 1000,
+      },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
     ],
   },
   contributions: {
@@ -99,8 +192,21 @@ export const API_ENDPOINTS = {
     icon: '🔥',
     required: ['username'],
     optional: [
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
-      { key: 'year', type: 'number', label: 'Year', min: 2015, max: new Date().getFullYear(), default: new Date().getFullYear() },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
+      {
+        key: 'year',
+        type: 'number',
+        label: 'Year',
+        min: 2015,
+        max: new Date().getFullYear(),
+        default: new Date().getFullYear(),
+      },
     ],
   },
   badges: {
@@ -110,7 +216,13 @@ export const API_ENDPOINTS = {
     pathParams: ['type'],
     required: [],
     optional: [
-      { key: 'type', type: 'select', label: 'Badge Type', options: ['followers', 'stars', 'forks', 'watchers'], default: 'followers' },
+      {
+        key: 'type',
+        type: 'select',
+        label: 'Badge Type',
+        options: ['followers', 'stars', 'forks', 'watchers'],
+        default: 'followers',
+      },
       { key: 'repo', type: 'text', label: 'Repository (owner/repo)' },
     ],
   },
@@ -120,17 +232,29 @@ export const API_ENDPOINTS = {
     icon: '📊',
     required: ['username'],
     optional: [
-      { key: 'theme', type: 'select', label: 'Theme', options: ['dark', 'light', 'tokyonight', 'dracula'], default: 'dark' },
-      { key: 'layout', type: 'select', label: 'Layout', options: ['default', 'compact', 'wide'], default: 'default' },
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
+      {
+        key: 'layout',
+        type: 'select',
+        label: 'Layout',
+        options: ['default', 'compact', 'wide'],
+        default: 'default',
+      },
     ],
   },
 };
 
 export function buildQuery(params) {
   return Object.entries(params)
-    .filter(([_, v]) => v !== undefined && v !== "")
+    .filter(([_, v]) => v !== undefined && v !== '')
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-    .join("&");
+    .join('&');
 }
 
 export function buildApiUrl(widgetType, config, baseUrl = API_BASE) {
@@ -152,7 +276,10 @@ export function buildApiUrl(widgetType, config, baseUrl = API_BASE) {
 
   pathParamKeys.forEach((key) => {
     const rawValue = queryConfig[key];
-    const value = rawValue === undefined || rawValue === null || rawValue === '' ? '' : encodeURIComponent(rawValue);
+    const value =
+      rawValue === undefined || rawValue === null || rawValue === ''
+        ? ''
+        : encodeURIComponent(rawValue);
     path = path.replace(`:${key}`, value);
     delete queryConfig[key];
   });
@@ -161,13 +288,18 @@ export function buildApiUrl(widgetType, config, baseUrl = API_BASE) {
   return query ? `${baseUrl}${path}?${query}` : `${baseUrl}${path}`;
 }
 
-export function generateMarkdownFromWidgets(widgets, baseUrl = import.meta.env.VITE_API_BASE) {
+export function generateMarkdownFromWidgets(
+  widgets,
+  baseUrl = import.meta.env.VITE_API_BASE
+) {
   return widgets
     .map((widget) => {
       if (API_ENDPOINTS[widget.type]) {
         const endpoint = API_ENDPOINTS[widget.type];
         const url = buildApiUrl(widget.type, widget.config, baseUrl);
-        const title = endpoint.label || widget.type.charAt(0).toUpperCase() + widget.type.slice(1);
+        const title =
+          endpoint.label ||
+          widget.type.charAt(0).toUpperCase() + widget.type.slice(1);
         const displayUrl = url.replace(/&/g, '\\&');
         return `![${title}](${displayUrl})`;
       }
@@ -253,4 +385,3 @@ export function getConfigSchema(widgetType) {
 
   return schema;
 }
-

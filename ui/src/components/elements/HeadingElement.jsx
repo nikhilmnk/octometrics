@@ -7,4 +7,3 @@ export const HeadingElement = ({ config }) => {
 
   return <Tag className="text-dark-text font-bold">{text}</Tag>;
 };
-

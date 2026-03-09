@@ -2,11 +2,7 @@ import React, { createContext, useContext } from 'react';
 const DragContext = createContext();
 
 export const DragProvider = ({ children }) => {
-  return (
-    <DragContext.Provider value={{}}>
-      {children}
-    </DragContext.Provider>
-  );
+  return <DragContext.Provider value={{}}>{children}</DragContext.Provider>;
 };
 
 export const useDragContext = () => {
