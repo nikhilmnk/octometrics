@@ -12,9 +12,31 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # install backend deps
+      - name: Install backend dependencies
+        run: npm install
+
+      # install UI deps
+      - name: Install UI dependencies
+        run: |
+          cd ui
+          npm install
+
+      # build UI
+      - name: Build UI
+        run: |
+          cd ui
+          npm run build
 
       - name: Install Vercel CLI
         run: npm install --global vercel

@@ -15,6 +15,12 @@ import {
   metricsCheck,
 } from './middleware/healthCheck.js';
 
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Validate configuration on startup
 try {
   validateConfig();
@@ -26,22 +32,19 @@ try {
 // Initialize Express app
 const app = express();
 
-// Middleware stack
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging and timing
+// Request logging
 app.use(requestLogger);
 
-// Health check endpoints (no rate limiting)
 app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
 app.get('/metrics', metricsCheck);
 
-// API routes with rate limiting and response headers
 app.use('/api', apiLimiter);
 
-// SVG endpoints get SVG headers
+// SVG endpoints headers
 app.use('/api/stats', svgResponseHeaders);
 app.use('/api/languages', svgResponseHeaders);
 app.use('/api/repos', svgResponseHeaders);
@@ -51,13 +54,26 @@ app.use('/api/badge', svgResponseHeaders);
 app.use('/api/contribution', svgResponseHeaders);
 app.use('/api/dashboard', svgResponseHeaders);
 
-// Other endpoints get JSON headers
+// JSON endpoints
 app.use('/api/health', jsonResponseHeaders);
 
 // API router
 app.use('/api', router);
 
-// 404 handler
+const uiPath = path.join(__dirname, '../ui/dist');
+
+// Serve static files
+app.use(express.static(uiPath));
+
+// React fallback (ignore /api routes)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+
+  res.sendFile(path.join(uiPath, 'index.html'));
+});
+
 app.use((req, res) => {
   logger.warn({ path: req.path, method: req.method }, 'Route not found');
   res.status(404).json({
@@ -66,10 +82,8 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler
 app.use(errorHandler);
 
-// Start server
 const server = app.listen(config.PORT, config.HOST, () => {
   logger.info(
     { host: config.HOST, port: config.PORT, env: config.NODE_ENV },
@@ -77,7 +91,6 @@ const server = app.listen(config.PORT, config.HOST, () => {
   );
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received, shutting down gracefully');
   server.close(() => {
@@ -94,7 +107,6 @@ process.on('SIGINT', () => {
   });
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   logger.error(
     { error: error.message, stack: error.stack },
