@@ -31,7 +31,7 @@ export default function App() {
               value={globalUsername}
               onChange={(e) => setGlobalUsername(e.target.value)}
               placeholder="octocat"
-              className="flex-1 max-w-xs px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
+              className="flex-1 max-w-xs px-3 py-1 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
             />
             <div className="text-xs text-gray-500">
               This username will be used for all widgets that require it
