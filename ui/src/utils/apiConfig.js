@@ -1,6 +1,20 @@
 export const API_BASE =
   import.meta.env.VITE_API_BASE || 'https://octometrics.vercel.app';
 
+const creditOption = {
+  key: 'hide_credit',
+  type: 'checkbox',
+  label: 'Hide Credit Footer',
+  description: 'Disable the small "Powered by OctoMetrics" footer in the SVG.',
+  default: false,
+};
+
+function normalizeBadgeSegment(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, '_');
+}
+
 export const MARKDOWN_ELEMENTS = {
   heading: {
     label: 'Heading',
@@ -48,6 +62,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
+      creditOption,
     ],
   },
   languages: {
@@ -85,6 +100,7 @@ export const API_ENDPOINTS = {
         options: ['top', 'all'],
         default: 'top',
       },
+      creditOption,
     ],
   },
   repos: {
@@ -115,6 +131,7 @@ export const API_ENDPOINTS = {
         options: ['stars', 'forks', 'watchers', 'updated'],
         default: 'stars',
       },
+      creditOption,
     ],
   },
   banner: {
@@ -154,6 +171,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
+      creditOption,
     ],
   },
   typing: {
@@ -185,6 +203,23 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
+      creditOption,
+    ],
+  },
+  streak: {
+    endpoint: '/api/streak',
+    label: 'GitHub Streak',
+    icon: '🔥',
+    required: ['username'],
+    optional: [
+      {
+        key: 'theme',
+        type: 'select',
+        label: 'Theme',
+        options: ['dark', 'light', 'tokyonight', 'dracula'],
+        default: 'dark',
+      },
+      creditOption,
     ],
   },
   contributions: {
@@ -208,6 +243,7 @@ export const API_ENDPOINTS = {
         max: new Date().getFullYear(),
         default: new Date().getFullYear(),
       },
+      creditOption,
     ],
   },
   badges: {
@@ -221,10 +257,42 @@ export const API_ENDPOINTS = {
         key: 'type',
         type: 'select',
         label: 'Badge Type',
-        options: ['followers', 'stars', 'forks', 'watchers'],
+        options: ['followers', 'stars', 'forks', 'license', 'repo', 'custom'],
         default: 'followers',
       },
+      { key: 'user', type: 'text', label: 'GitHub Username' },
       { key: 'repo', type: 'text', label: 'Repository (owner/repo)' },
+      {
+        key: 'badge_text',
+        type: 'text',
+        label: 'Badge Text',
+        description:
+          'Used for custom badges rendered through /api/badge/:badge.',
+        default: 'JavaScript',
+      },
+      {
+        key: 'badge_color',
+        type: 'text',
+        label: 'Badge Color',
+        description:
+          'Use a named color like yellow, blue, orange, or a hex value like 20232A.',
+        default: 'yellow',
+      },
+      {
+        key: 'message',
+        type: 'text',
+        label: 'Badge Message',
+        description: 'Optional second segment for custom badges.',
+        default: '',
+      },
+      {
+        key: 'style',
+        type: 'select',
+        label: 'Badge Style',
+        options: ['flat', 'for-the-badge'],
+        default: 'for-the-badge',
+      },
+      creditOption,
     ],
   },
   dashboard: {
@@ -247,13 +315,18 @@ export const API_ENDPOINTS = {
         options: ['default', 'compact', 'wide'],
         default: 'default',
       },
+      creditOption,
     ],
   },
 };
 
 export function buildQuery(params) {
   return Object.entries(params)
-    .filter(([_, v]) => v !== undefined && v !== '')
+    .filter(([k, v]) => {
+      if (v === undefined || v === '') return false;
+      if (k === 'hide_credit' && v === false) return false;
+      return true;
+    })
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
     .join('&');
 }
@@ -268,10 +341,31 @@ export function buildApiUrl(widgetType, config, baseUrl = API_BASE) {
 
   if (widgetType === 'badges') {
     const badgeType = queryConfig.type || 'followers';
-    if (badgeType === 'followers') {
+    if (badgeType === 'custom') {
+      const badgeText = normalizeBadgeSegment(
+        queryConfig.badge_text || 'JavaScript'
+      );
+      const badgeColor = normalizeBadgeSegment(
+        queryConfig.badge_color || 'yellow'
+      );
+      path = `/api/badge/${encodeURIComponent(`${badgeText}-${badgeColor}`)}`;
+      delete queryConfig.type;
       delete queryConfig.repo;
+      delete queryConfig.user;
+      delete queryConfig.badge_text;
+      delete queryConfig.badge_color;
+    } else if (badgeType === 'followers') {
+      delete queryConfig.repo;
+      delete queryConfig.badge_text;
+      delete queryConfig.badge_color;
+      delete queryConfig.message;
+      delete queryConfig.style;
     } else {
       delete queryConfig.user;
+      delete queryConfig.badge_text;
+      delete queryConfig.badge_color;
+      delete queryConfig.message;
+      delete queryConfig.style;
     }
   }
 

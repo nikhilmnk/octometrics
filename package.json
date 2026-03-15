@@ -4,6 +4,17 @@
   "description": "All-in-One GitHub Profile Analytics Engine",
   "main": "src/server.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikhilmnk/octometrics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nikhilmnk/octometrics/issues"
+  },
+  "homepage": "https://github.com/nikhilmnk/octometrics#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
@@ -36,7 +47,14 @@
     "github",
     "analytics",
     "svg",
-    "serverless"
+    "serverless",
+    "github-readme",
+    "github-profile",
+    "github-stats",
+    "developer-analytics",
+    "svg-widgets",
+    "github-profile-dashboard",
+    "nodejs"
   ],
   "author": "OctoMetrics Team",
   "license": "MIT"

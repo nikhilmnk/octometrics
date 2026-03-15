@@ -7,16 +7,18 @@ import {
 import { getUserStats } from '../engines/statsEngine.js';
 import { generateStatsCard } from '../svg/statsCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
+import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
 
 export const statsController = async (req, res) => {
   try {
-    const { username, theme = 'dark' } = req.query;
+    const { username, theme = 'dark', hide_credit } = req.query;
+    const hideCredit = shouldHideCredit(hide_credit);
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `stats_${username}_${theme}`;
+    const cacheKey = `stats_${username}_${theme}_${hideCredit ? 'nocredit' : 'credit'}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -26,7 +28,9 @@ export const statsController = async (req, res) => {
     const repos = await fetchUserRepositories(username);
     const stats = getUserStats(profile, repos);
     const themeObj = loadTheme(theme);
-    const svg = generateStatsCard(stats, themeObj);
+    const svg = addSvgCredit(generateStatsCard(stats, themeObj), {
+      hideCredit,
+    });
 
     set(cacheKey, svg);
 

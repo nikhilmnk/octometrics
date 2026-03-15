@@ -1,6 +1,7 @@
 import { generateBanner } from '../engines/bannerEngine.js';
 import { generateBannerCard } from '../svg/bannerCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
+import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
 
 export const bannerController = async (req, res) => {
   try {
@@ -16,7 +17,9 @@ export const bannerController = async (req, res) => {
       pattern = 'dots',
       align = 'center',
       theme = 'dark',
+      hide_credit,
     } = req.query;
+    const hideCredit = shouldHideCredit(hide_credit);
 
     const displayName = username || name;
 
@@ -38,7 +41,9 @@ export const bannerController = async (req, res) => {
       pattern,
       align,
     });
-    const svg = generateBannerCard(bannerData, themeObj);
+    const svg = addSvgCredit(generateBannerCard(bannerData, themeObj), {
+      hideCredit,
+    });
 
     res.setHeader('Content-Type', 'image/svg+xml').send(svg);
   } catch (error) {

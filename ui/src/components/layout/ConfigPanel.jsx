@@ -59,6 +59,31 @@ export const ConfigPanel = () => {
       ]
     : markdownFieldSchema[widget.type] || [];
 
+  const visibleFields =
+    widget.type === 'badges'
+      ? allFields.filter((field) => {
+          const badgeType = widget.config?.type || 'followers';
+
+          if (field.key === 'user') {
+            return badgeType === 'followers';
+          }
+
+          if (field.key === 'repo') {
+            return ['stars', 'forks', 'license', 'repo'].includes(badgeType);
+          }
+
+          if (
+            ['badge_text', 'badge_color', 'message', 'style'].includes(
+              field.key
+            )
+          ) {
+            return badgeType === 'custom';
+          }
+
+          return true;
+        })
+      : allFields;
+
   const handleChange = (key, value) => {
     updateWidget(selectedWidgetId, { [key]: value });
   };
@@ -184,13 +209,13 @@ export const ConfigPanel = () => {
       </div>
 
       <div className="p-4 flex flex-col gap-5 overflow-y-auto flex-1">
-        {allFields.length === 0 && (
+        {visibleFields.length === 0 && (
           <p className="text-xs text-gray-500">
             This element has no configurable fields.
           </p>
         )}
 
-        {allFields.map((field) => (
+        {visibleFields.map((field) => (
           <div key={field.key} className="flex flex-col gap-2">
             <label className="text-sm font-medium text-dark-text flex items-center gap-1">
               {field.label}
@@ -198,6 +223,9 @@ export const ConfigPanel = () => {
                 <span className="text-xs text-red-400">*</span>
               )}
             </label>
+            {field.description && (
+              <p className="text-xs text-gray-500">{field.description}</p>
+            )}
             {renderField(field)}
           </div>
         ))}

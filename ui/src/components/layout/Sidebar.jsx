@@ -7,6 +7,7 @@ const WIDGET_TYPES = [
   'repos',
   'banner',
   'typing',
+  'streak',
   'contributions',
   'badges',
 ];

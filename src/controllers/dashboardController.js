@@ -3,6 +3,7 @@ import { get, set } from '../utils/cache.js';
 import { generateDashboard } from '../engines/dashboardEngine.js';
 import { generateDashboardCard } from '../svg/dashboardCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
+import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
 
 export const dashboardController = async (req, res) => {
   try {
@@ -10,14 +11,16 @@ export const dashboardController = async (req, res) => {
       username,
       theme = 'dark',
       layout = 'default', // 'default' | 'compact' | 'wide'
+      hide_credit,
     } = req.query;
+    const hideCredit = shouldHideCredit(hide_credit);
 
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc" rx="8"/><text x="20" y="60" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `dashboard_${username}_${theme}_${layout}`;
+    const cacheKey = `dashboard_${username}_${theme}_${layout}_${hideCredit ? 'nocredit' : 'credit'}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -26,7 +29,12 @@ export const dashboardController = async (req, res) => {
     const dashboard = await generateDashboard(username);
 
     const themeObj = loadTheme(theme);
-    const svg = generateDashboardCard(dashboard, themeObj, layout);
+    const svg = addSvgCredit(
+      generateDashboardCard(dashboard, themeObj, layout),
+      {
+        hideCredit,
+      }
+    );
 
     set(cacheKey, svg);
     res.setHeader('Content-Type', 'image/svg+xml').send(svg);

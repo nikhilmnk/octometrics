@@ -1,7 +1,19 @@
 {
   "name": "octometrics-ui",
   "version": "1.0.0",
+  "description": "React and Vite UI builder for OctoMetrics GitHub profile widgets",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikhilmnk/octometrics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nikhilmnk/octometrics/issues"
+  },
+  "homepage": "https://github.com/nikhilmnk/octometrics/tree/main/ui",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -21,5 +33,18 @@
     "tailwindcss": "^3.3.0",
     "postcss": "^8.4.32",
     "autoprefixer": "^10.4.16"
-  }
+  },
+  "keywords": [
+    "github-readme",
+    "github-profile",
+    "github-stats",
+    "developer-analytics",
+    "svg-widgets",
+    "github-profile-dashboard",
+    "nodejs",
+    "vite",
+    "react"
+  ],
+  "author": "OctoMetrics Team",
+  "license": "MIT"
 }
