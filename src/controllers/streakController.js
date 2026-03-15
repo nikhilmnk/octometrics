@@ -1,21 +1,25 @@
 import { validateUsername } from '../utils/validator.js';
 import { get, set } from '../utils/cache.js';
 import { loadTheme } from '../utils/themeLoader.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
 import { getStreakStats } from '../engines/streakEngine.js';
 import { generateStreakCard } from '../svg/streakCard.js';
+import {
+  getWidgetCacheKeySuffix,
+  getWidgetOptions,
+} from '../utils/widgetOptions.js';
 
 export const streakController = async (req, res) => {
   try {
-    const { username, theme = 'dark', hide_credit } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const { username, theme = 'dark' } = req.query;
+    const widgetOptions = getWidgetOptions(req.query);
 
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `streak_${username}_${theme}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `streak_${username}_${theme}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -23,9 +27,10 @@ export const streakController = async (req, res) => {
 
     const streak = await getStreakStats(username);
     const themeObj = loadTheme(theme);
-    const svg = addSvgCredit(generateStreakCard(username, streak, themeObj), {
-      hideCredit,
-    });
+    const svg = addSvgCredit(
+      generateStreakCard(username, streak, themeObj),
+      widgetOptions
+    );
 
     set(cacheKey, svg);
     return res.setHeader('Content-Type', 'image/svg+xml').send(svg);

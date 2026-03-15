@@ -4,7 +4,11 @@ import { getRepoStats } from '../engines/repoEngine.js';
 import { generateRepoCard } from '../svg/repoCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
 import { fetchUserRepositories } from '../services/githubService.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
+import {
+  getWidgetCacheKeySuffix,
+  getWidgetOptions,
+} from '../utils/widgetOptions.js';
 
 export const reposController = async (req, res) => {
   try {
@@ -12,16 +16,15 @@ export const reposController = async (req, res) => {
       username,
       theme = 'dark',
       count = '6', // how many repos to show
-      hide_credit,
     } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const widgetOptions = getWidgetOptions(req.query);
 
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `repos_${username}_${theme}_${count}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `repos_${username}_${theme}_${count}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -36,7 +39,7 @@ export const reposController = async (req, res) => {
     }
 
     const themeObj = loadTheme(theme);
-    const svg = addSvgCredit(generateRepoCard(repos, themeObj), { hideCredit });
+    const svg = addSvgCredit(generateRepoCard(repos, themeObj), widgetOptions);
 
     set(cacheKey, svg);
     res.setHeader('Content-Type', 'image/svg+xml').send(svg);

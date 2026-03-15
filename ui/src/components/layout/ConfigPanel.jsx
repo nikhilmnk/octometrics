@@ -84,12 +84,34 @@ export const ConfigPanel = () => {
         })
       : allFields;
 
+  const withState = (field) => {
+    if (field.group === 'widget_options') {
+      if (
+        (field.key === 'credit_text' || field.key === 'credit_link') &&
+        !widget.config?.credit
+      ) {
+        return null;
+      }
+    }
+
+    return field;
+  };
+
+  const enhancedFields = visibleFields.map(withState).filter(Boolean);
+  const mainFields = enhancedFields.filter(
+    (field) => field.group !== 'widget_options'
+  );
+  const widgetOptionFields = enhancedFields.filter(
+    (field) => field.group === 'widget_options'
+  );
+
   const handleChange = (key, value) => {
     updateWidget(selectedWidgetId, { [key]: value });
   };
 
   const renderField = (field) => {
     const value = widget.config?.[field.key];
+    const disabled = Boolean(field.disabled);
 
     switch (field.type) {
       case 'text':
@@ -98,7 +120,8 @@ export const ConfigPanel = () => {
             type="text"
             value={value ?? ''}
             onChange={(event) => handleChange(field.key, event.target.value)}
-            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
+            disabled={disabled}
+            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           />
         );
 
@@ -112,7 +135,8 @@ export const ConfigPanel = () => {
             onChange={(event) =>
               handleChange(field.key, Number(event.target.value) || '')
             }
-            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
+            disabled={disabled}
+            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           />
         );
 
@@ -123,7 +147,8 @@ export const ConfigPanel = () => {
               type="color"
               value={value || '#000000'}
               onChange={(event) => handleChange(field.key, event.target.value)}
-              className="px-2 py-1 bg-dark-bg border border-dark-border rounded cursor-pointer focus:outline-none focus:border-dark-accent transition-colors h-10 w-14"
+              disabled={disabled}
+              className="px-2 py-1 bg-dark-bg border border-dark-border rounded cursor-pointer focus:outline-none focus:border-dark-accent transition-colors h-10 w-14 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <span className="text-xs text-gray-500 font-mono">{value}</span>
           </div>
@@ -134,7 +159,8 @@ export const ConfigPanel = () => {
           <select
             value={value ?? ''}
             onChange={(event) => handleChange(field.key, event.target.value)}
-            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors"
+            disabled={disabled}
+            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="">{`Select ${field.label.toLowerCase()}`}</option>
             {field.options.map((option) => (
@@ -154,6 +180,7 @@ export const ConfigPanel = () => {
               onChange={(event) =>
                 handleChange(field.key, event.target.checked)
               }
+              disabled={disabled}
               className="w-4 h-4 bg-dark-bg border border-dark-border rounded cursor-pointer accent-dark-accent"
             />
             <span className="text-sm text-gray-400">{field.label}</span>
@@ -166,7 +193,8 @@ export const ConfigPanel = () => {
             value={value ?? ''}
             onChange={(event) => handleChange(field.key, event.target.value)}
             rows={5}
-            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors resize-y"
+            disabled={disabled}
+            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors resize-y disabled:opacity-50 disabled:cursor-not-allowed"
           />
         );
 
@@ -185,7 +213,8 @@ export const ConfigPanel = () => {
               )
             }
             rows={6}
-            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors resize-y"
+            disabled={disabled}
+            className="px-3 py-2 bg-dark-bg border border-dark-border rounded text-dark-text focus:outline-none focus:border-dark-accent transition-colors resize-y disabled:opacity-50 disabled:cursor-not-allowed"
           />
         );
       }
@@ -215,7 +244,7 @@ export const ConfigPanel = () => {
           </p>
         )}
 
-        {visibleFields.map((field) => (
+        {mainFields.map((field) => (
           <div key={field.key} className="flex flex-col gap-2">
             <label className="text-sm font-medium text-dark-text flex items-center gap-1">
               {field.label}
@@ -229,6 +258,25 @@ export const ConfigPanel = () => {
             {renderField(field)}
           </div>
         ))}
+
+        {widgetOptionFields.length > 0 && (
+          <div className="flex flex-col gap-4 pt-2 border-t border-dark-border">
+            <h4 className="text-sm font-semibold text-dark-text">
+              Widget Options
+            </h4>
+            {widgetOptionFields.map((field) => (
+              <div key={field.key} className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-dark-text flex items-center gap-1">
+                  {field.label}
+                </label>
+                {field.description && (
+                  <p className="text-xs text-gray-500">{field.description}</p>
+                )}
+                {renderField(field)}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="p-4 border-t border-dark-border bg-dark-bg">

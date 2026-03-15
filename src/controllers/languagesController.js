@@ -4,7 +4,11 @@ import { getLanguageStats } from '../engines/languageEngine.js';
 import { generateLanguageCard } from '../svg/languageCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
 import { fetchUserRepositories } from '../services/githubService.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
+import {
+  getWidgetCacheKeySuffix,
+  getWidgetOptions,
+} from '../utils/widgetOptions.js';
 
 export const languagesController = async (req, res) => {
   try {
@@ -14,16 +18,15 @@ export const languagesController = async (req, res) => {
       layout = 'bar', // 'bar' | 'circle'
       view = 'top', // 'top' | 'all'
       top = '5', // how many top languages (ignored when view=all)
-      hide_credit,
     } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const widgetOptions = getWidgetOptions(req.query);
 
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `languages_${username}_${theme}_${layout}_${view}_${top}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `languages_${username}_${theme}_${layout}_${view}_${top}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -45,7 +48,7 @@ export const languagesController = async (req, res) => {
     const themeObj = loadTheme(theme);
     const svg = addSvgCredit(
       generateLanguageCard(languages, themeObj, layout, view),
-      { hideCredit }
+      widgetOptions
     );
 
     set(cacheKey, svg);

@@ -1,7 +1,8 @@
 import { generateTyping } from '../engines/typingEngine.js';
 import { generateTypingCard } from '../svg/typingCard.js';
 import { loadTheme } from '../utils/themeLoader.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
+import { getWidgetOptions } from '../utils/widgetOptions.js';
 
 export const typingController = async (req, res) => {
   try {
@@ -15,9 +16,8 @@ export const typingController = async (req, res) => {
       center = 'false',
       vCenter = 'false',
       theme = 'dark',
-      hide_credit,
     } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const widgetOptions = getWidgetOptions(req.query);
 
     let { lines } = req.query;
 
@@ -66,7 +66,7 @@ export const typingController = async (req, res) => {
         vCenter: vCenter === 'true',
         theme: themeObj,
       }),
-      { hideCredit }
+      widgetOptions
     );
 
     res.setHeader('Content-Type', 'image/svg+xml');

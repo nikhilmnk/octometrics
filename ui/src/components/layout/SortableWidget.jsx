@@ -8,6 +8,7 @@ import { DividerElement } from '../elements/DividerElement';
 import { ImageElement } from '../elements/ImageElement';
 import { CodeBlockElement } from '../elements/CodeBlockElement';
 import { ListElement } from '../elements/ListElement';
+import { BasePreviewCard } from '../widgets/BasePreviewCard';
 
 const ApiWidgetPreview = ({ widget }) => {
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ const ApiWidgetPreview = ({ widget }) => {
   );
 
   return (
-    <div>
+    <BasePreviewCard>
       {loading && (
         <div className="text-xs text-gray-400 mb-2 animate-pulse">
           Loading preview...
@@ -32,7 +33,7 @@ const ApiWidgetPreview = ({ widget }) => {
         onLoad={() => setLoading(false)}
         onError={() => setLoading(false)}
       />
-    </div>
+    </BasePreviewCard>
   );
 };
 

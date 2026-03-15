@@ -1,7 +1,5 @@
 import { escapeSVG } from './sanitize.js';
-
-const CREDIT_TEXT = 'Powered by OctoMetrics';
-const CREDIT_URL = 'https://github.com/nikhilmnk/octometrics';
+import { widgetDefaults } from '../config/widgetConfig.js';
 
 function parseSvgDimension(svg, attr) {
   const directMatch = svg.match(new RegExp(`${attr}="([0-9.]+)`));
@@ -27,9 +25,13 @@ export function shouldHideCredit(value) {
 }
 
 export function addSvgCredit(svg, options = {}) {
-  const { hideCredit = false } = options;
+  const {
+    showAttribution = false,
+    attributionText = widgetDefaults.attributionText,
+    attributionLink = widgetDefaults.attributionLink,
+  } = options;
 
-  if (hideCredit || !svg.includes('</svg>')) {
+  if (!showAttribution || !svg.includes('</svg>')) {
     return svg;
   }
 
@@ -43,12 +45,12 @@ export function addSvgCredit(svg, options = {}) {
   const fontSize = Math.max(7, Math.min(10, Math.floor(height / 18)));
   const x = width - 10;
   const y = height - 8;
-  const safeText = escapeSVG(CREDIT_TEXT);
-  const safeUrl = escapeSVG(CREDIT_URL);
+  const safeText = escapeSVG(attributionText);
+  const safeUrl = escapeSVG(attributionLink);
 
   const footer = `
   <a href="${safeUrl}" target="_blank">
-    <text x="${x}" y="${y}" text-anchor="end" font-family="Arial,sans-serif" font-size="${fontSize}" fill="#ffffff" opacity="0.35">${safeText}</text>
+    <text x="${x}" y="${y}" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="${fontSize}" fill="#ffffff" opacity="0.35">${safeText}</text>
   </a>
 `;
 

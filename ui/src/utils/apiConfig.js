@@ -1,13 +1,30 @@
 export const API_BASE =
   import.meta.env.VITE_API_BASE || 'https://octometrics.vercel.app';
 
-const creditOption = {
-  key: 'hide_credit',
-  type: 'checkbox',
-  label: 'Hide Credit Footer',
-  description: 'Disable the small "Powered by OctoMetrics" footer in the SVG.',
-  default: false,
-};
+const attributionOptions = [
+  {
+    key: 'credit',
+    type: 'checkbox',
+    label: 'Show Attribution',
+    description: 'Optionally add attribution to the generated widget.',
+    default: false,
+    group: 'widget_options',
+  },
+  {
+    key: 'credit_text',
+    type: 'text',
+    label: 'Attribution Text',
+    default: '',
+    group: 'widget_options',
+  },
+  {
+    key: 'credit_link',
+    type: 'text',
+    label: 'Attribution Link',
+    default: '',
+    group: 'widget_options',
+  },
+];
 
 function normalizeBadgeSegment(value) {
   return String(value || '')
@@ -62,7 +79,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   languages: {
@@ -100,7 +117,7 @@ export const API_ENDPOINTS = {
         options: ['top', 'all'],
         default: 'top',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   repos: {
@@ -131,7 +148,7 @@ export const API_ENDPOINTS = {
         options: ['stars', 'forks', 'watchers', 'updated'],
         default: 'stars',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   banner: {
@@ -171,7 +188,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   typing: {
@@ -203,7 +220,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   streak: {
@@ -219,7 +236,7 @@ export const API_ENDPOINTS = {
         options: ['dark', 'light', 'tokyonight', 'dracula'],
         default: 'dark',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   contributions: {
@@ -243,7 +260,7 @@ export const API_ENDPOINTS = {
         max: new Date().getFullYear(),
         default: new Date().getFullYear(),
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   badges: {
@@ -292,7 +309,7 @@ export const API_ENDPOINTS = {
         options: ['flat', 'for-the-badge'],
         default: 'for-the-badge',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
   dashboard: {
@@ -315,7 +332,7 @@ export const API_ENDPOINTS = {
         options: ['default', 'compact', 'wide'],
         default: 'default',
       },
-      creditOption,
+      ...attributionOptions,
     ],
   },
 };
@@ -324,7 +341,10 @@ export function buildQuery(params) {
   return Object.entries(params)
     .filter(([k, v]) => {
       if (v === undefined || v === '') return false;
-      if (k === 'hide_credit' && v === false) return false;
+      if (k === 'credit' && v === false) return false;
+      if ((k === 'credit_text' || k === 'credit_link') && !params.credit) {
+        return false;
+      }
       return true;
     })
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
@@ -395,8 +415,7 @@ export function generateMarkdownFromWidgets(
         const title =
           endpoint.label ||
           widget.type.charAt(0).toUpperCase() + widget.type.slice(1);
-        const displayUrl = url.replace(/&/g, '\\&');
-        return `![${title}](${displayUrl})`;
+        return `![${title}](${url})`;
       }
 
       // Markdown element

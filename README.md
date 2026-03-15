@@ -125,7 +125,7 @@ Note: requires `GITHUB_TOKEN` in `.env`.
 /api/streak?username=<github_user>
 ```
 
-Params: `theme` (`dark`, `light`, `tokyonight`, `dracula`), `hide_credit` (`true` or omitted).
+Params: `theme` (`dark`, `light`, `tokyonight`, `dracula`), `credit` (`true` or omitted), `credit_text`, `credit_link`.
 
 ---
 

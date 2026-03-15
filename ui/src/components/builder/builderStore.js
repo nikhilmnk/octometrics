@@ -128,8 +128,7 @@ export const useBuilderStore = create(
               }
               const url = buildApiUrl(widget.type, config, baseUrl);
               const title = endpoint.label || widget.type;
-              const displayUrl = url.replace(/&/g, '\\&');
-              return `![${title}](${displayUrl})`;
+              return `![${title}](${url})`;
             }
 
             // Markdown element

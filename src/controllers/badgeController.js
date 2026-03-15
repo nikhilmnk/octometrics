@@ -3,13 +3,17 @@ import { get, set } from '../utils/cache.js';
 import { getBadgeData } from '../engines/badgeEngine.js';
 import { renderBadgeCard } from '../svg/badgeCard.js';
 import { parseCustomBadgePath } from '../utils/badge.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
+import {
+  getWidgetCacheKeySuffix,
+  getWidgetOptions,
+} from '../utils/widgetOptions.js';
 
 export const badgeController = async (req, res) => {
   try {
     const { type } = req.params;
-    const { repo, user, hide_credit } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const { repo, user } = req.query;
+    const widgetOptions = getWidgetOptions(req.query);
 
     let param, isValid;
     if (type === 'followers') {
@@ -25,14 +29,14 @@ export const badgeController = async (req, res) => {
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `badge_${type}_${param}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `badge_${type}_${param}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
     }
 
     const badgeData = await getBadgeData(type, param);
-    const svg = addSvgCredit(renderBadgeCard(badgeData), { hideCredit });
+    const svg = addSvgCredit(renderBadgeCard(badgeData), widgetOptions);
 
     set(cacheKey, svg);
 
@@ -49,16 +53,16 @@ export const badgeController = async (req, res) => {
 export const customBadgeController = (req, res) => {
   try {
     const { badge } = req.params;
-    const hideCredit = shouldHideCredit(req.query.hide_credit);
+    const widgetOptions = getWidgetOptions(req.query);
     const badgeData = parseCustomBadgePath(badge, req.query);
-    const cacheKey = `custom_badge_${badge}_${JSON.stringify(req.query || {})}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `custom_badge_${badge}_${JSON.stringify(req.query || {})}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
 
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
     }
 
-    const svg = addSvgCredit(renderBadgeCard(badgeData), { hideCredit });
+    const svg = addSvgCredit(renderBadgeCard(badgeData), widgetOptions);
     set(cacheKey, svg);
 
     return res.setHeader('Content-Type', 'image/svg+xml').send(svg);

@@ -8,18 +8,22 @@ import { generateContributionGraph } from '../svg/contributionGraph.js';
 import { generateContribution3DGraph } from '../svg/contribution3DGraph.js';
 import { loadTheme } from '../utils/themeLoader.js';
 import { fetchContributionGraph } from '../services/githubService.js';
-import { addSvgCredit, shouldHideCredit } from '../utils/svgCredit.js';
+import { addSvgCredit } from '../utils/svgCredit.js';
+import {
+  getWidgetCacheKeySuffix,
+  getWidgetOptions,
+} from '../utils/widgetOptions.js';
 
 const getContributions = async (req, res) => {
   try {
-    const { username, theme = 'dark', year, hide_credit } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const { username, theme = 'dark', year } = req.query;
+    const widgetOptions = getWidgetOptions(req.query);
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `contributions_${username}_${theme}_${year || 'current'}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `contributions_${username}_${theme}_${year || 'current'}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -37,7 +41,7 @@ const getContributions = async (req, res) => {
     const themeObj = loadTheme(theme);
     const svg = addSvgCredit(
       generateContributionGraph(grid, themeObj, totalContributions, year),
-      { hideCredit }
+      widgetOptions
     );
 
     set(cacheKey, svg);
@@ -58,14 +62,14 @@ const getContributions = async (req, res) => {
 
 const getContributions3D = async (req, res) => {
   try {
-    const { username, theme = 'dark', year, hide_credit } = req.query;
-    const hideCredit = shouldHideCredit(hide_credit);
+    const { username, theme = 'dark', year } = req.query;
+    const widgetOptions = getWidgetOptions(req.query);
     if (!validateUsername(username)) {
       const errorSvg = `<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#ffcccc"/><text x="10" y="50" font-family="Arial" font-size="16" fill="#cc0000">Invalid username</text></svg>`;
       return res.setHeader('Content-Type', 'image/svg+xml').send(errorSvg);
     }
 
-    const cacheKey = `contributions3d_${username}_${theme}_${year || 'current'}_${hideCredit ? 'nocredit' : 'credit'}`;
+    const cacheKey = `contributions3d_${username}_${theme}_${year || 'current'}_${getWidgetCacheKeySuffix(widgetOptions)}`;
     const cachedSvg = get(cacheKey);
     if (cachedSvg) {
       return res.setHeader('Content-Type', 'image/svg+xml').send(cachedSvg);
@@ -87,7 +91,7 @@ const getContributions3D = async (req, res) => {
     const themeObj = loadTheme(theme);
     const svg = addSvgCredit(
       generateContribution3DGraph(grid, themeObj, totalContributions, year),
-      { hideCredit }
+      widgetOptions
     );
 
     set(cacheKey, svg);
