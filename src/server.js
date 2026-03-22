@@ -52,6 +52,7 @@ app.use('/api/banner', svgResponseHeaders);
 app.use('/api/typing', svgResponseHeaders);
 app.use('/api/streak', svgResponseHeaders);
 app.use('/api/badge', svgResponseHeaders);
+app.use('/api/badges', svgResponseHeaders);
 app.use('/api/contribution', svgResponseHeaders);
 app.use('/api/dashboard', svgResponseHeaders);
 

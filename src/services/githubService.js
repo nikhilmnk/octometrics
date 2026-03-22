@@ -1,6 +1,6 @@
 import { getFeatureConfig } from '../config/config.js';
 
-const headers = {
+const baseHeaders = {
   'User-Agent': 'octometrics',
 };
 
@@ -13,37 +13,55 @@ const isRealToken = (t) =>
     t.startsWith('github_pat_') ||
     (t.length >= 40 && !t.includes(' ') && t !== 'your_github_token_here'));
 if (isRealToken(githubConfig?.token)) {
-  headers['Authorization'] = `Bearer ${githubConfig.token}`;
+  baseHeaders['Authorization'] = `Bearer ${githubConfig.token}`;
 }
+
+const createHeaders = (includeAuth = true) => {
+  const headers = { ...baseHeaders };
+
+  if (!includeAuth) {
+    delete headers['Authorization'];
+  }
+
+  return headers;
+};
+
+const fetchGitHubRest = async (url) => {
+  let response = await fetch(url, { headers: createHeaders(true) });
+
+  // Public REST endpoints should still work even if the configured token is
+  // expired or invalid, so retry once without Authorization.
+  if (
+    !response.ok &&
+    (response.status === 401 || response.status === 403) &&
+    baseHeaders['Authorization']
+  ) {
+    response = await fetch(url, { headers: createHeaders(false) });
+  }
+
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status}`);
+  }
+
+  return response.json();
+};
 
 // Fetch user profile data
 export const fetchUserProfile = async (username) => {
   const url = `https://api.github.com/users/${username}`;
-  const response = await fetch(url, { headers });
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-  return response.json();
+  return fetchGitHubRest(url);
 };
 
 // Fetch user repositories
 export const fetchUserRepositories = async (username) => {
   const url = `https://api.github.com/users/${username}/repos?per_page=100`;
-  const response = await fetch(url, { headers });
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-  return response.json();
+  return fetchGitHubRest(url);
 };
 
 // Fetch repository info
 export const fetchRepositoryInfo = async (repo) => {
   const url = `https://api.github.com/repos/${repo}`;
-  const response = await fetch(url, { headers });
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-  return response.json();
+  return fetchGitHubRest(url);
 };
 
 // Fetch contribution graph data via GraphQL (requires GITHUB_TOKEN)
@@ -52,7 +70,7 @@ export const fetchContributionGraph = async (
   from = null,
   to = null
 ) => {
-  if (!headers['Authorization']) {
+  if (!baseHeaders['Authorization']) {
     throw new Error(
       'GITHUB_TOKEN is not set. Add it to your .env file. GitHub GraphQL API requires authentication. See: https://github.com/settings/tokens'
     );
@@ -79,7 +97,7 @@ export const fetchContributionGraph = async (
   const response = await fetch('https://api.github.com/graphql', {
     method: 'POST',
     headers: {
-      ...headers,
+      ...createHeaders(true),
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

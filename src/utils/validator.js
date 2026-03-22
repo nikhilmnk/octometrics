@@ -4,6 +4,6 @@ export const validateUsername = (username) => {
 
 export const validateRepo = (repo) => {
   return (
-    typeof repo === 'string' && /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/.test(repo)
+    typeof repo === 'string' && /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repo)
   );
 };
