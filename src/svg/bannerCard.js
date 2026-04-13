@@ -2,31 +2,86 @@ import { escapeSVG } from '../utils/sanitize.js';
 
 // ── Tech icon SVG paths (inline, 24×24 viewBox) ─────────────────────────────
 const TECH_ICONS = {
-  // language/framework colour dots
+  // 🟡 Languages
   JS: { color: '#f7df1e', label: 'JS' },
   TS: { color: '#3178c6', label: 'TS' },
   PY: { color: '#3572a5', label: 'PY' },
+  JAVA: { color: '#b07219', label: 'JV' },
+  CPP: { color: '#f34b7d', label: 'C++' },
+  C: { color: '#555555', label: 'C' },
+  CS: { color: '#178600', label: 'C#' },
   GO: { color: '#00add8', label: 'GO' },
   RS: { color: '#dea584', label: 'RS' },
-  CPP: { color: '#f34b7d', label: 'C++' },
-  JAVA: { color: '#b07219', label: 'JV' },
   RB: { color: '#701516', label: 'RB' },
   PHP: { color: '#4f5d95', label: 'PHP' },
-  CS: { color: '#178600', label: 'C#' },
+  SWIFT: { color: '#f05138', label: 'SW' },
   KT: { color: '#a97bff', label: 'KT' },
-  SW: { color: '#f05138', label: 'SW' },
   DART: { color: '#00b4ab', label: 'DA' },
-  VUE: { color: '#41b883', label: 'VU' },
-  REACT: { color: '#61dafb', label: 'RE' },
-  NODE: { color: '#339933', label: 'NO' },
-  HTML: { color: '#e34c26', label: 'HT' },
+
+  // 🎨 Frontend
+  HTML: { color: '#e34c26', label: 'HTML' },
   CSS: { color: '#563d7c', label: 'CSS' },
-  RUST: { color: '#dea584', label: 'RU' },
+  SASS: { color: '#cc6699', label: 'SA' },
+  REACT: { color: '#61dafb', label: 'RE' },
+  NEXT: { color: '#000000', label: 'NX' },
+  VUE: { color: '#41b883', label: 'VU' },
+  ANGULAR: { color: '#dd0031', label: 'NG' },
+  BOOTSTRAP: { color: '#7952b3', label: 'BS' },
+  TAILWIND: { color: '#38bdf8', label: 'TW' },
+
+  // ⚙️ Backend
+  NODE: { color: '#339933', label: 'NO' },
+  EXPRESS: { color: '#000000', label: 'EX' },
+  NEST: { color: '#e0234e', label: 'NS' },
+  DJANGO: { color: '#092e20', label: 'DJ' },
+  FLASK: { color: '#000000', label: 'FL' },
+  SPRING: { color: '#6db33f', label: 'SP' },
+  LARAVEL: { color: '#ff2d20', label: 'LV' },
+
+  // 🗄️ Databases
+  POSTGRES: { color: '#336791', label: 'PG' },
+  MYSQL: { color: '#00758f', label: 'MY' },
+  MONGO: { color: '#47a248', label: 'MG' },
+  REDIS: { color: '#dc382d', label: 'RD' },
+  SQLITE: { color: '#003b57', label: 'SQ' },
+  FIREBASE: { color: '#ffca28', label: 'FB' },
+
+  // ☁️ Cloud / DevOps
+  AWS: { color: '#ff9900', label: 'AWS' },
+  GCP: { color: '#4285f4', label: 'GCP' },
+  AZURE: { color: '#0078d4', label: 'AZ' },
   DOCKER: { color: '#2496ed', label: 'DK' },
   K8S: { color: '#326ce5', label: 'K8' },
-  GIT: { color: '#f05032', label: 'GI' },
-  AWS: { color: '#ff9900', label: 'AWS' },
-  GCP: { color: '#4285f4', label: 'GC' },
+  VERCEL: { color: '#000000', label: 'VC' },
+  NETLIFY: { color: '#00c7b7', label: 'NF' },
+
+  // 🔧 Tools
+  GIT: { color: '#f05032', label: 'GIT' },
+  GITHUB: { color: '#181717', label: 'GH' },
+  GITLAB: { color: '#fc6d26', label: 'GL' },
+  FIGMA: { color: '#f24e1e', label: 'FG' },
+  POSTMAN: { color: '#ff6c37', label: 'PM' },
+
+  // 🤖 AI / Data
+  AI: { color: '#8a2be2', label: 'AI' },
+  ML: { color: '#ff6f00', label: 'ML' },
+  DL: { color: '#ff4081', label: 'DL' },
+  NLP: { color: '#00bcd4', label: 'NLP' },
+  TENSORFLOW: { color: '#ff6f00', label: 'TF' },
+  PYTORCH: { color: '#ee4c2c', label: 'PT' },
+
+  // 📱 Mobile / Cross-platform
+  REACT_NATIVE: { color: '#61dafb', label: 'RN' },
+  FLUTTER: { color: '#02569b', label: 'FL' },
+  ANDROID: { color: '#3ddc84', label: 'AN' },
+  IOS: { color: '#000000', label: 'iOS' },
+
+  // 🧠 Other
+  GRAPHQL: { color: '#e10098', label: 'GQL' },
+  REST: { color: '#00a86b', label: 'API' },
+  WEB3: { color: '#f16822', label: 'W3' },
+  BLOCKCHAIN: { color: '#121d33', label: 'BC' },
+  AUTOMATION: { color: '#6c757d', label: 'AUTO' },
 };
 
 // Normalise a tech string to find its icon config
