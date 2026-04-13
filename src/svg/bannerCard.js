@@ -69,6 +69,7 @@ const TECH_ICONS = {
   NLP: { color: '#00bcd4', label: 'NLP' },
   TENSORFLOW: { color: '#ff6f00', label: 'TF' },
   PYTORCH: { color: '#ee4c2c', label: 'PT' },
+  AUTOMATION: { color: '#ee4c2c', label: 'AUTOMATION' },
 
   // 📱 Mobile / Cross-platform
   REACT_NATIVE: { color: '#61dafb', label: 'RN' },
@@ -227,8 +228,20 @@ export const generateBannerCard = (data, theme) => {
   H += techStack.length > 0 ? 40 : 0;
   H = Math.max(H, 180);
 
-  const cx = align === 'left' ? 60 : W / 2;
-  const anchor = align === 'left' ? 'start' : 'middle';
+  // ✅ ALIGNMENT FIX (left / center / right)
+  const cx =
+    align === 'left'
+      ? 60
+      : align === 'right'
+      ? W - 60
+      : W / 2;
+
+  const anchor =
+    align === 'left'
+      ? 'start'
+      : align === 'right'
+      ? 'end'
+      : 'middle';
 
   const bg = theme.background;
   const bdr = theme.borderColor;
@@ -242,7 +255,14 @@ export const generateBannerCard = (data, theme) => {
   if (techStack.length > 0) {
     const badgeData = techStack.map((t) => techBadge(t, 0, 0));
     const totalW = badgeData.reduce((s, b) => s + b.width, 0);
-    let bx = align === 'left' ? cx : cx - totalW / 2;
+
+    let bx =
+      align === 'left'
+        ? cx
+        : align === 'right'
+        ? cx - totalW
+        : cx - totalW / 2;
+
     badgeData.forEach((b) => {
       techSVG += b.svg.replace('translate(0,0)', `translate(${bx},0)`);
       bx += b.width;
@@ -252,6 +272,7 @@ export const generateBannerCard = (data, theme) => {
   // -- Vertical positioning
   let contentY = H * 0.5 - 20;
   if (title || subtitle) contentY = H * 0.4;
+
   const nameY = contentY;
   const titleY = nameY + 30;
   const subtitleY = titleY + 22;
@@ -259,32 +280,39 @@ export const generateBannerCard = (data, theme) => {
   const socialY = locY + (location ? 22 : 0);
   const techY = socialY + 24;
 
-  // build background pattern
+  // background pattern
   const bgPattern =
     pattern === 'grid'
       ? grid(W, H, ico)
       : pattern === 'none'
-        ? ''
-        : dots(W, H, ico);
+      ? ''
+      : dots(W, H, ico);
 
-  // Gradient: diagonal, theme bg → translucent accent
   const gradId = 'bg';
   const grad2Id = 'shimmer';
 
+  // ✅ underline alignment fix
+  const underlineX =
+    align === 'left'
+      ? cx
+      : align === 'right'
+      ? cx - 120
+      : cx - 60;
+
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Main background gradient -->
     <linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%"   style="stop-color:${bg};stop-opacity:1"/>
       <stop offset="60%"  style="stop-color:${bg};stop-opacity:1"/>
       <stop offset="100%" style="stop-color:${acc};stop-opacity:0.3"/>
     </linearGradient>
-    <!-- Shimmer overlay -->
+
     <linearGradient id="${grad2Id}" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%"   style="stop-color:${ico};stop-opacity:0"/>
       <stop offset="50%"  style="stop-color:${ico};stop-opacity:0.06"/>
       <stop offset="100%" style="stop-color:${ico};stop-opacity:0"/>
     </linearGradient>
+
     <clipPath id="card-clip">
       <rect width="${W}" height="${H}" rx="16"/>
     </clipPath>
@@ -293,38 +321,33 @@ export const generateBannerCard = (data, theme) => {
   <!-- Card background -->
   <rect width="${W}" height="${H}" rx="16" fill="url(#${gradId})" stroke="${bdr}" stroke-width="1.5"/>
 
-  <!-- Clip group for all inner elements -->
   <g clip-path="url(#card-clip)">
-
-    <!-- Background pattern -->
     ${bgPattern}
-
-    <!-- Decorative blob circles -->
     ${blobs(W, H, ico, acc)}
-
-    <!-- Animated wave -->
     ${showWave ? wave(W, H, acc) : ''}
 
     <!-- Shimmer overlay -->
     <rect width="${W}" height="${H}" fill="url(#${grad2Id})"/>
 
-    <!-- Corner accent lines -->
     ${cornerAccents(W, H, ico)}
-
-    <!-- ── CONTENT ── -->
 
     <!-- Name -->
     <text x="${cx}" y="${nameY}" font-family="Arial,sans-serif" font-size="40" font-weight="bold"
-      fill="${txt}" text-anchor="${anchor}" letter-spacing="1">${escapeSVG(name)}</text>
+      fill="${txt}" text-anchor="${anchor}" letter-spacing="1">
+      ${escapeSVG(name)}
+    </text>
 
     <!-- Accent underline under name -->
-    <rect x="${align === 'left' ? cx : cx - 60}" y="${nameY + 5}" width="120" height="3" rx="2" fill="${acc}" opacity="0.7"/>
+    <rect x="${underlineX}" y="${nameY + 5}" width="120" height="3" rx="2"
+      fill="${acc}" opacity="0.7"/>
 
     <!-- Title -->
     ${
       title
         ? `<text x="${cx}" y="${titleY}" font-family="Arial,sans-serif" font-size="18" font-weight="600"
-      fill="${acc}" text-anchor="${anchor}" opacity="0.95">${escapeSVG(title)}</text>`
+      fill="${acc}" text-anchor="${anchor}" opacity="0.95">
+      ${escapeSVG(title)}
+    </text>`
         : ''
     }
 
@@ -332,7 +355,9 @@ export const generateBannerCard = (data, theme) => {
     ${
       subtitle
         ? `<text x="${cx}" y="${subtitleY}" font-family="Arial,sans-serif" font-size="14"
-      fill="${sub}" text-anchor="${anchor}" opacity="0.85">${escapeSVG(subtitle)}</text>`
+      fill="${sub}" text-anchor="${anchor}" opacity="0.85">
+      ${escapeSVG(subtitle)}
+    </text>`
         : ''
     }
 
